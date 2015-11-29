@@ -3,7 +3,7 @@ package Mock::Sub;
 use 5.006;
 use strict;
 use warnings;
-use Data::Dumper;
+
 our $VERSION = '0.02';
 
 sub new {
@@ -49,12 +49,11 @@ sub call_count {
 }
 sub name {
     my $self = shift;
-    print Dumper $self;
     return $self->{name};  
 }
 sub reset {
     my $self = shift;
-    for (qw(side_effect return_value)){
+    for (qw(side_effect return_value called call_count)){
         delete $self->{$_};
     }
 }
@@ -157,6 +156,41 @@ MyModule::first).
 
 =head1 METHODS
 
+=head2 C<new>
+
+Instantiates and returns a new Mock::Sub object.
+
+=head2 C<mock('sub', %opts)>
+
+Instantiates a new object on each call. 'sub' is the name of the subroutine to mock
+(requires full package name if the sub isn't in C<main::>).
+
+Options:
+
+return_value: Set this to have the mocked sub return anything you wish.
+
+side_effect: Send in a code reference containing an action you'd like the mocked
+sub to perform (C<die()> is useful for testing with C<eval()>).
+
+Note that only one of these parameters may be sent in at a time.
+
+=head2 C<called>
+
+Returns true if the sub being mocked has been called.
+
+=head2 C<call_count>
+
+Returns the number of times the mocked sub has been called.
+
+=head2 C<name>
+
+Returns the full name of the sub being mocked, as entered into C<mock()>.
+
+=head2 C<reset>
+
+Resets the functional parameters (C<return_value>, C<side_effect>), along
+with C<called()> and C<call_count> back to undef/untrue.
+
 
 
 =head1 AUTHOR
@@ -192,6 +226,7 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-MockSub>
 
 =head1 ACKNOWLEDGEMENTS
 
+Python's MagicMock module.
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -207,3 +242,4 @@ See L<http://dev.perl.org/licenses/> for more information.
 =cut
 
 1; # End of Mock::Sub
+

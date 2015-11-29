@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 12;
 
 use lib 't/data';
 
@@ -41,4 +41,18 @@ BEGIN {
     $foo->reset;
 
     is ($foo->name, 'One::foo', "after reset, obj has sub name");
+}
+{
+    my $foo = Mock::Sub->mock('One::foo');
+
+    Two::test; 
+    Two::test; 
+
+    is ($foo->called, 1, "before reset, called == 1");
+    is ($foo->call_count, 2, "before reset, call_count == 2");
+
+    $foo->reset;
+
+    is ($foo->called, 0, "after reset, called == 0");
+    is ($foo->call_count, undef, "after reset, call_count == 0");
 }
