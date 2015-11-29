@@ -86,6 +86,14 @@ to collect stats on them.
     $foo->called;       # was the sub called?
     $foo->call_count;   # how many times was it called?
 
+    # create a mock object to reduce typing when multiple subs
+    # are mocked
+
+    my $mock = Mock::Sub->new;
+
+    my $foo = $mock->('Package::foo');
+    my $bar = $mock->('Package::bar');
+
     # have the mocked sub return something when it's called
 
     $foo = $mock->('Package::foo', return_value => 'True');
@@ -98,14 +106,6 @@ to collect stats on them.
 
     $foo->reset;
 
-    # create a mock object to reduce typing when multiple subs
-    # are mocked
-
-    my $mock = Mock::Sub->new;
-    
-    my $foo = $mock->('Package::foo');
-    my $bar = $mock->('Package::bar');
-    my $baz = $mock->('Package::baz');
 
 =head1 DESCRIPTION
 
