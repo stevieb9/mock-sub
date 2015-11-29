@@ -3,18 +3,18 @@ package Mock::Sub;
 use 5.006;
 use strict;
 use warnings;
-
+use Data::Dumper;
 our $VERSION = '0.02';
 
 sub new {
     return bless {}, shift;
 }
 sub mock {
-    shift;
+    
+    shift; # throw away class/object
+
     my $self = bless {}, __PACKAGE__;
-
     my $sub = shift;
-
     %{ $self } = @_;
 
     if (defined $self->{return_value} && defined $self->{side_effect}){
@@ -32,6 +32,7 @@ sub mock {
         no warnings 'redefine';
 
         *$sub = sub {
+            $self->{name} = $sub;
             $self->{call_count} = ++$called; 
             return $self->{return_value} if defined $self->{return_value};
             $self->{side_effect}->() if $self->{side_effect};
@@ -46,28 +47,34 @@ sub called {
 sub call_count {
     return shift->{call_count};
 }
+sub name {
+    my $self = shift;
+    print Dumper $self;
+    return $self->{name};  
+}
 sub reset {
     my $self = shift;
-    delete $self->{$_} for keys %{ $self };
+    for (qw(side_effect return_value)){
+        delete $self->{$_};
+    }
 }
 sub _end {}; # vim placeholder
 
 1;
 =head1 NAME
 
-Mock::Sub - The great new Mock::Sub!
+Mock::Sub - Mock package, module, object and standard subs, with ability to collect stats.
 
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Mock::Sub;
 
-    my $foo = Mock::Sub->new();
-    ...
+    my $foo = Mock::Sub->mock('Package::sub');
+
+    Package::sub();
+
+    print 
 
 
 =head1 METHODS

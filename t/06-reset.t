@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 use lib 't/data';
 
@@ -24,7 +24,6 @@ BEGIN {
     is ($ret2, undef, "after reset, return_value is reset");
 
     $foo = Mock::Sub->mock('One::foo', side_effect => sub {return 10;});
-
     my $ret3 = Two::test;
 
     is ($ret3, 10, "before reset, side_effect does the right thing");
@@ -34,4 +33,12 @@ BEGIN {
     my $ret4 = Two::test;
     
     is ($ret4, undef, "after reset, side_effect does nothing");
+
+    $foo = Mock::Sub->mock('One::foo');
+    Two::test;
+    is ($foo->name, 'One::foo', "before reset, obj has sub name");
+
+    $foo->reset;
+
+    is ($foo->name, 'One::foo', "after reset, obj has sub name");
 }
