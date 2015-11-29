@@ -1,9 +1,10 @@
 Revision history for Mock-Sub
 
-0.04    xxxx
+0.04    2015-11-29
+        - sorry for the cpan uploads... not usually this messy
         - added name()
         - many more tests
-        - major POD updates
+        - major POD updates/fixes
 
 0.02    2015-11-29
         - renamed project from Test::MockSub to Mock::Sub
