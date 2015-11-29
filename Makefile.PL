@@ -4,10 +4,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME             => 'Test::MockSub',
+    NAME             => 'Mock::Sub',
     AUTHOR           => q{Steve Bertrand <steveb@cpan.org>},
-    VERSION_FROM     => 'lib/Test/MockSub.pm',
-    ABSTRACT_FROM    => 'lib/Test/MockSub.pm',
+    VERSION_FROM     => 'lib/Mock/Sub.pm',
+    ABSTRACT_FROM    => 'lib/Mock/Sub.pm',
     LICENSE          => 'perl_5',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
@@ -20,5 +20,5 @@ WriteMakefile(
     PREREQ_PM => {
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Test-MockSub-*' },
+    clean => { FILES => 'Mock-Sub-*' },
 );

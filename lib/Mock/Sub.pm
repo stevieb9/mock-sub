@@ -1,12 +1,10 @@
-package Test::MockSub;
+package Mock::Sub;
 
 use 5.006;
 use strict;
 use warnings;
 
 our $VERSION = '0.01';
-
-package Test::MockSub;
 
 sub new {
     return bless {}, shift;
@@ -57,7 +55,7 @@ sub _end {}; # vim placeholder
 1;
 =head1 NAME
 
-Test::MockSub - The great new Test::MockSub!
+Mock::Sub - The great new Mock::Sub!
 
 
 =head1 SYNOPSIS
@@ -66,9 +64,9 @@ Quick summary of what the module does.
 
 Perhaps a little code snippet.
 
-    use Test::MockSub;
+    use Mock::Sub;
 
-    my $foo = Test::MockSub->new();
+    my $foo = Mock::Sub->new();
     ...
 
 
@@ -92,7 +90,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Test::MockSub
+    perldoc Mock::Sub
 
 
 You can also look for information at:
@@ -122,4 +120,4 @@ See L<http://dev.perl.org/licenses/> for more information.
 
 =cut
 
-1; # End of Test::MockSub
+1; # End of Mock::Sub

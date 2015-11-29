@@ -1,18 +1,18 @@
-package B;
+package Two;
 
 use lib '.';
-use A;
+use One;
 
 sub test {
-    my $obj = A->new;
+    my $obj = One->new;
     $obj->foo;
 }
 sub test2 {
-    my $obj = A->new;
+    my $obj = One->new;
     $obj->bar;
 }
 sub test3 {
-    my $obj = A->new;
+    my $obj = One->new;
     $obj->baz;
 }
 

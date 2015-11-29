@@ -7,15 +7,15 @@ use Test::More tests => 3;
 use lib 't/data';
 
 BEGIN {
-    use_ok('B');
-    use_ok('Test::MockSub');
+    use_ok('Two');
+    use_ok('Mock::Sub');
 };
 
 {# called()
 
-    my $test = Test::MockSub->mock('A::foo');
-    B::test;
-    B::test;
+    my $test = Mock::Sub->mock('One::foo');
+    Two::test;
+    Two::test;
 
     my $called = $test->called;
     is ($called, 1, "count() does the right thing after one call");

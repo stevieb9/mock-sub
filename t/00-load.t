@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Test::MockSub' ) || print "Bail out!\n";
+    use_ok( 'Mock::Sub' ) || print "Bail out!\n";
 }
 
-diag( "Testing Test::MockSub $Test::MockSub::VERSION, Perl $], $^X" );
+diag( "Testing Mock::Sub $Mock::Sub::VERSION, Perl $], $^X" );
