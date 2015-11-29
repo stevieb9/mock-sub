@@ -31,6 +31,7 @@ sub mock {
 
     {
         no strict 'refs';
+        no warnings 'redefine';
 
         *$sub = sub {
             $self->{call_count} = ++$called; 
