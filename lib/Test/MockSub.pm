@@ -6,6 +6,54 @@ use warnings;
 
 our $VERSION = '0.01';
 
+package Test::MockSub;
+
+sub new {
+    return bless {}, shift;
+}
+sub mock {
+    shift;
+    my $self = bless {}, __PACKAGE__;
+
+    my $sub = shift;
+
+    %{ $self } = @_;
+
+    if (defined $self->{return_value} && defined $self->{side_effect}){
+        die "use only one of return_value or side_effect";
+    }
+
+    if (defined $self->{side_effect} && ref $self->{side_effect} ne 'CODE'){
+        die "side_effect param must be a cref";
+    }
+
+    my $called;
+
+    {
+        no strict 'refs';
+
+        *$sub = sub {
+            $self->{call_count} = ++$called; 
+            return $self->{return_value} if defined $self->{return_value};
+            $self->{side_effect}->() if $self->{side_effect};
+        };
+    }
+
+    return $self;
+}
+sub called {
+    return shift->call_count ? 1 : 0;
+}
+sub call_count {
+    return shift->{call_count};
+}
+sub reset {
+    my $self = shift;
+    delete $self->{$_} for keys %{ $self };
+}
+sub _end {}; # vim placeholder
+
+1;
 =head1 NAME
 
 Test::MockSub - The great new Test::MockSub!
