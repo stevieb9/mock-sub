@@ -22,16 +22,16 @@ SYNOPSIS
 
         my $mock = Mock::Sub->new;
 
-        my $foo = $mock->('Package::foo');
-        my $bar = $mock->('Package::bar');
+        my $foo = $mock->mock('Package::foo');
+        my $bar = $mock->mock('Package::bar');
 
         # have the mocked sub return something when it's called
 
-        $foo = $mock->('Package::foo', return_value => 'True');
+        $foo = $mock->mock('Package::foo', return_value => 'True');
 
         # have the mocked sub perform an action
 
-        $foo = $mock->('Package::foo', side_effect => sub { die "eval catch"; });
+        $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
 
         # reset the mocked sub for re-use within the same scope
 
