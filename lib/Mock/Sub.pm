@@ -62,8 +62,8 @@ sub _end {}; # vim placeholder
 1;
 =head1 NAME
 
-Mock::Sub - Mock package, module, object and standard subs, with ability to
-collect stats.
+Mock::Sub - Mock package, module, object and standard subroutines, with ability
+to collect stats on them.
 
 
 =head1 SYNOPSIS
