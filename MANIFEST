@@ -10,8 +10,10 @@ t/01-called.t
 t/02-call_count.t
 t/03-instantiate.t
 t/04-return_value.t
-t/data/A.pm
-t/data/B.pm
+t/05-side_effect.t
+t/06-reset.t
+t/data/One.pm
+t/data/Two.pm
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
