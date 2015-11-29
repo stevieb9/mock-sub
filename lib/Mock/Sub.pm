@@ -48,8 +48,7 @@ sub call_count {
     return shift->{call_count};
 }
 sub name {
-    my $self = shift;
-    return $self->{name};  
+    return shift->{name};  
 }
 sub reset {
     my $self = shift;
