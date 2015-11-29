@@ -85,14 +85,6 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
     $foo->called;       # was the sub called?
     $foo->call_count;   # how many times was it called?
 
-    # create a mock object to reduce typing
-
-    my $mock = Mock::Sub->new;
-    
-    my $foo = $mock->('Package::foo');
-    my $bar = $mock->('Package::bar');
-    my $baz = $mock->('Package::baz');
-
     # have the mocked sub return something when it's called
 
     $foo = $mock->('Package::foo', return_value => 'True');
@@ -104,6 +96,15 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
     # reset the mocked sub for re-use within the same scope
 
     $foo->reset;
+
+    # create a mock object to reduce typing when multiple subs
+    # are mocked
+
+    my $mock = Mock::Sub->new;
+    
+    my $foo = $mock->('Package::foo');
+    my $bar = $mock->('Package::bar');
+    my $baz = $mock->('Package::baz');
 
 =head1 DESCRIPTION
 
@@ -159,11 +160,11 @@ MyModule::first).
 
     # coverage for first if() in MyPackage::test
     test(1);
-    is ($first->called, 1, "first if() covered");
+    is ($first->called, 1, "1st if() covered");
 
     # coverage for second if()
     test(2);
-    is ($second->called, 1, "first if() covered");
+    is ($second->called, 1, "2nd if() covered");
 
 
 =head1 METHODS
