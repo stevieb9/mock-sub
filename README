@@ -1,16 +1,32 @@
-NAME
-    Test::MockSub - The great new Test::MockSub!
-
 SYNOPSIS
-    Quick summary of what the module does.
+        use Mock::Sub;
 
-    Perhaps a little code snippet.
+        my $foo = Mock::Sub->mock('Package::foo');
+        my $bar = Mock::Sub->mock('Package::bar');
 
-        use Test::MockSub;
+        # wait until the mocked sub is called
 
-        my $foo = Test::MockSub->new();
-        ...
+        Package::foo();
 
+        say $foo->name;         # name of sub that's mocked
+        say $foo->called;       # was the sub called?
+        say $foo->call_count;   # how many times was it called?
+
+        # create an object to reduce typing
+
+        my $mock = Mock::Sub->new;
+    
+        my $foo = $mock->('Package::foo');
+        my $bar = $mock->('Package::bar');
+
+        # have the mocked sub return something when it's called
+
+        $foo = $mock->('Package::foo', return_value => 'True');
+
+        # have the mocked sub perform an action
+
+        $foo = $mock->('Package::foo', side_effect => sub { die "eval catch"; });
+    
 METHODS
 AUTHOR
     Steve Bertrand, `<steveb at cpan.org>'
@@ -25,7 +41,7 @@ BUGS
 SUPPORT
     You can find documentation for this module with the perldoc command.
 
-        perldoc Test::MockSub
+        perldoc Mock::Sub
 
     You can also look for information at:
 

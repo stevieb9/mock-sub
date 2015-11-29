@@ -70,12 +70,32 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
 
     use Mock::Sub;
 
-    my $foo = Mock::Sub->mock('Package::sub');
+    my $foo = Mock::Sub->mock('Package::foo');
+    my $bar = Mock::Sub->mock('Package::bar');
 
-    Package::sub();
+    # wait until the mocked sub is called
 
-    print 
+    Package::foo();
 
+    say $foo->name;         # name of sub that's mocked
+    say $foo->called;       # was the sub called?
+    say $foo->call_count;   # how many times was it called?
+
+    # create an object to reduce typing
+
+    my $mock = Mock::Sub->new;
+    
+    my $foo = $mock->('Package::foo');
+    my $bar = $mock->('Package::bar');
+
+    # have the mocked sub return something when it's called
+
+    $foo = $mock->('Package::foo', return_value => 'True');
+
+    # have the mocked sub perform an action
+
+    $foo = $mock->('Package::foo', side_effect => sub { die "eval catch"; });
+    
 
 =head1 METHODS
 
