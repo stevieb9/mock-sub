@@ -101,6 +101,10 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
 
     $foo = $mock->('Package::foo', side_effect => sub { die "eval catch"; });
 
+    # reset the mocked sub for re-use within the same scope
+
+    $foo->reset;
+
 =head1 DESCRIPTION
 
 Easy to use and very lightweight module for mocking out sub calls. Very useful for testing
