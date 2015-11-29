@@ -38,8 +38,8 @@ sub mock {
         *$sub = sub {
             $self->{name} = $sub;
             $self->{call_count} = ++$called; 
-            $self->{side_effect}->() if $self->{side_effect};
             return $self->{return_value} if defined $self->{return_value};
+            $self->{side_effect}->() if $self->{side_effect};
         };
     }
     return $self;
