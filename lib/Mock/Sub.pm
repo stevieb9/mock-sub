@@ -4,7 +4,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub new {
     return bless {}, shift;
@@ -95,11 +95,14 @@ Mock::Sub - Mock package, module, object and standard subroutines, with ability 
 
     # have the mocked sub return something when it's called
 
-    $foo = $mock->mock('Package::foo', return_value => 'True');
+    my $foo = $mock->mock('Package::foo', return_value => 'True');
+    my $return = Package::foo;
 
     # have the mocked sub perform an action
 
     $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+    Package::foo;
+    print 'died' if $@;
 
     # reset the mocked sub for re-use within the same scope
 
