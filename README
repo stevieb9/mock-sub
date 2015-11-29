@@ -1,0 +1,44 @@
+NAME
+    Test::MockSub - The great new Test::MockSub!
+
+SYNOPSIS
+    Quick summary of what the module does.
+
+    Perhaps a little code snippet.
+
+        use Test::MockSub;
+
+        my $foo = Test::MockSub->new();
+        ...
+
+METHODS
+AUTHOR
+    Steve Bertrand, `<steveb at cpan.org>'
+
+BUGS
+    Please report any bugs or feature requests to `bug-test-mocksub at
+    rt.cpan.org', or through the web interface at
+    http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Test-MockSub. I will be
+    notified, and then you'll automatically be notified of progress on your
+    bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Test::MockSub
+
+    You can also look for information at:
+
+    * RT: CPAN's request tracker (report bugs here)
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-MockSub
+
+ACKNOWLEDGEMENTS
+LICENSE AND COPYRIGHT
+    Copyright 2015 Steve Bertrand.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of either: the GNU General Public License as published
+    by the Free Software Foundation; or the Artistic License.
+
+    See http://dev.perl.org/licenses/ for more information.
+
