@@ -27,11 +27,14 @@ SYNOPSIS
 
         # have the mocked sub return something when it's called
 
-        $foo = $mock->mock('Package::foo', return_value => 'True');
+        my $foo = $mock->mock('Package::foo', return_value => 'True');
+        my $return = Package::foo;
 
         # have the mocked sub perform an action
 
         $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+        Package::foo;
+        print 'died' if $@;
 
         # reset the mocked sub for re-use within the same scope
 

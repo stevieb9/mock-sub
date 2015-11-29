@@ -1,7 +1,11 @@
 Revision history for Mock-Sub
 
+0.07    xxxxx
+        - code cleanup
+        - pod updates 
+        - opened bug 1: need to add with_args()
+
 0.04    2015-11-29
-        - sorry for the cpan uploads... not usually this messy
         - added name()
         - many more tests
         - major POD updates/fixes

@@ -17,9 +17,13 @@ sub mock {
     my $sub = shift;
     %{ $self } = @_;
 
+    # can't do side_effect and return_value in one pass (yet)
+
     if (defined $self->{return_value} && defined $self->{side_effect}){
         die "use only one of return_value or side_effect";
     }
+
+    # side_effect must be a legit code reference
 
     if (defined $self->{side_effect} && ref $self->{side_effect} ne 'CODE'){
         die "side_effect param must be a cref";
@@ -34,11 +38,10 @@ sub mock {
         *$sub = sub {
             $self->{name} = $sub;
             $self->{call_count} = ++$called; 
-            return $self->{return_value} if defined $self->{return_value};
             $self->{side_effect}->() if $self->{side_effect};
+            return $self->{return_value} if defined $self->{return_value};
         };
     }
-
     return $self;
 }
 sub called {
