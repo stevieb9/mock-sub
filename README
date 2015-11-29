@@ -1,4 +1,6 @@
 SYNOPSIS
+        # see EXAMPLES for a full use case and caveats
+
         use Mock::Sub;
 
         my $foo = Mock::Sub->mock('Package::foo');
@@ -15,14 +17,6 @@ SYNOPSIS
         $foo->called;       # was the sub called?
         $foo->call_count;   # how many times was it called?
 
-        # create a mock object to reduce typing
-
-        my $mock = Mock::Sub->new;
-    
-        my $foo = $mock->('Package::foo');
-        my $bar = $mock->('Package::bar');
-        my $baz = $mock->('Package::baz');
-
         # have the mocked sub return something when it's called
 
         $foo = $mock->('Package::foo', return_value => 'True');
@@ -30,7 +24,20 @@ SYNOPSIS
         # have the mocked sub perform an action
 
         $foo = $mock->('Package::foo', side_effect => sub { die "eval catch"; });
-   
+
+        # reset the mocked sub for re-use within the same scope
+
+        $foo->reset;
+
+        # create a mock object to reduce typing when multiple subs
+        # are mocked
+
+        my $mock = Mock::Sub->new;
+    
+        my $foo = $mock->('Package::foo');
+        my $bar = $mock->('Package::bar');
+        my $baz = $mock->('Package::baz');
+
 DESCRIPTION
     Easy to use and very lightweight module for mocking out sub calls. Very
     useful for testing areas of your own modules where getting coverage may
@@ -85,11 +92,11 @@ EXAMPLE
 
         # coverage for first if() in MyPackage::test
         test(1);
-        is ($first->called, 1, "first if() covered");
+        is ($first->called, 1, "1st if() statement covered");
 
         # coverage for second if()
         test(2);
-        is ($second->called, 1, "first if() covered");
+        is ($second->called, 1, "2nd if() statement covered");
 
 METHODS
   `new'
@@ -122,25 +129,29 @@ METHODS
     Resets the functional parameters (`return_value', `side_effect'), along
     with `called()' and `call_count' back to undef/untrue.
 
+NOTES
+    I didn't make this a `Test::' module (although it started that way)
+    because I can see more uses than placing it into that category.
+
 AUTHOR
     Steve Bertrand, `<steveb at cpan.org>'
 
 BUGS
-    Please report any bugs or feature requests to `bug-test-mocksub at
-    rt.cpan.org', or through the web interface at
-    http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Test-MockSub. I will be
-    notified, and then you'll automatically be notified of progress on your
-    bug as I make changes.
+    Please report any bugs or requests at
+    https://github.com/stevieb9/mock-sub/issues
+
+REPOSITORY
+    https://github.com/stevieb9/mock-sub
+
+BUILD RESULTS
+    Travis-CI: https://travis-ci.org/stevieb9/mock-sub
+
+    CPAN Testers: http://matrix.cpantesters.org/?dist=Mock-Sub
 
 SUPPORT
     You can find documentation for this module with the perldoc command.
 
         perldoc Mock::Sub
-
-    You can also look for information at:
-
-    * RT: CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-MockSub
 
 ACKNOWLEDGEMENTS
     Python's MagicMock module.

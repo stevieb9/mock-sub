@@ -4,7 +4,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub new {
     return bless {}, shift;
@@ -62,7 +62,8 @@ sub _end {}; # vim placeholder
 1;
 =head1 NAME
 
-Mock::Sub - Mock package, module, object and standard subs, with ability to collect stats.
+Mock::Sub - Mock package, module, object and standard subs, with ability to
+collect stats.
 
 
 =head1 SYNOPSIS
@@ -108,10 +109,10 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
 
 =head1 DESCRIPTION
 
-Easy to use and very lightweight module for mocking out sub calls. Very useful for testing
-areas of your own modules where getting coverage may be difficult due to nothing to test
-against, and/or to reduce test run time by eliminating the need to call subs that you
-really don't want or need to test.
+Easy to use and very lightweight module for mocking out sub calls.
+Very useful for testing areas of your own modules where getting coverage may
+be difficult due to nothing to test against, and/or to reduce test run time by
+eliminating the need to call subs that you really don't want or need to test.
 
 =head1 EXAMPLE
 
@@ -175,15 +176,15 @@ Instantiates and returns a new Mock::Sub object.
 
 =head2 C<mock('sub', %opts)>
 
-Instantiates a new object on each call. 'sub' is the name of the subroutine to mock
-(requires full package name if the sub isn't in C<main::>).
+Instantiates a new object on each call. 'sub' is the name of the subroutine
+to mock (requires full package name if the sub isn't in C<main::>).
 
 Options:
 
 return_value: Set this to have the mocked sub return anything you wish.
 
-side_effect: Send in a code reference containing an action you'd like the mocked
-sub to perform (C<die()> is useful for testing with C<eval()>).
+side_effect: Send in a code reference containing an action you'd like the
+mocked sub to perform (C<die()> is useful for testing with C<eval()>).
 
 Note that only one of these parameters may be sent in at a time.
 
@@ -204,7 +205,10 @@ Returns the full name of the sub being mocked, as entered into C<mock()>.
 Resets the functional parameters (C<return_value>, C<side_effect>), along
 with C<called()> and C<call_count> back to undef/untrue.
 
+=head1 NOTES
 
+I didn't make this a C<Test::> module (although it started that way) because
+I can see more uses than placing it into that category.
 
 =head1 AUTHOR
 
@@ -212,30 +216,24 @@ Steve Bertrand, C<< <steveb at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-test-mocksub at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Test-MockSub>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or requests at
+L<https://github.com/stevieb9/mock-sub/issues>
 
+=head1 REPOSITORY
 
+L<https://github.com/stevieb9/mock-sub>
 
+=head1 BUILD RESULTS
+
+Travis-CI: L<https://travis-ci.org/stevieb9/mock-sub>
+
+CPAN Testers: L<http://matrix.cpantesters.org/?dist=Mock-Sub>
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc Mock::Sub
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Test-MockSub>
-
-=back
-
 
 =head1 ACKNOWLEDGEMENTS
 
