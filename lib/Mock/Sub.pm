@@ -160,11 +160,11 @@ MyModule::first).
 
     # coverage for first if() in MyPackage::test
     test(1);
-    is ($first->called, 1, "1st if() covered");
+    is ($first->called, 1, "1st if() statement covered");
 
     # coverage for second if()
     test(2);
-    is ($second->called, 1, "2nd if() covered");
+    is ($second->called, 1, "2nd if() statement covered");
 
 
 =head1 METHODS
