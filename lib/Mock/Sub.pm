@@ -67,6 +67,8 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
 
 =head1 SYNOPSIS
 
+    # see EXAMPLES for a full use case and caveats
+
     use Mock::Sub;
 
     my $foo = Mock::Sub->mock('Package::foo');
@@ -98,7 +100,13 @@ Mock::Sub - Mock package, module, object and standard subs, with ability to coll
     # have the mocked sub perform an action
 
     $foo = $mock->('Package::foo', side_effect => sub { die "eval catch"; });
-    
+
+=head1 DESCRIPTION
+
+Easy to use and very lightweight module for mocking out sub calls. Very useful for testing
+areas of your own modules where getting coverage may be difficult due to nothing to test
+against, and/or to reduce test run time by eliminating the need to call subs that you
+really don't want or need to test.
 
 =head1 EXAMPLE
 
