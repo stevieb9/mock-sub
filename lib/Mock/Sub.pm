@@ -60,7 +60,7 @@ sub name {
 }
 sub reset {
     my $self = shift;
-    for (qw(side_effect return_value called called_count)){
+    for (qw(side_effect return_value called called_count called_with)){
         delete $self->{$_};
     }
 }
