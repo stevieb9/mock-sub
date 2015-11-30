@@ -1,10 +1,9 @@
 package Mock::Sub;
-
 use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub new {
     return bless {}, shift;
@@ -41,8 +40,8 @@ sub mock {
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
             if ($self->{side_effect}) {
-                my $return = $self->{side_effect}->();
-                return $return if defined $return;
+                my $effect = $self->{side_effect}->();
+                return $effect if defined $effect;
             }
             return $self->{return_value} if defined $self->{return_value};
         };
