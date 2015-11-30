@@ -5,8 +5,11 @@ Revision history for Mock-Sub
         - fixes bug #2: having side_effect after return_value breaks t/06
         - fixes bug #1: add called_with(), to extract the args passed in to
           the mocked sub
+        - fixes bug #4: completely validate that the sub param is a valid sub
+        - 'main::' is now prepended to subs if they don't have a package
         - side_effect now properly returns last expression evaluated
         - added proper checks that the sub sent in is valid
+        - side_effect and return_value can now be sent in simultaneously
 
 0.07    2015-11-29
         - code cleanup

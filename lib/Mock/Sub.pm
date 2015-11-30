@@ -25,12 +25,6 @@ sub mock {
 
     $self->{name} = $sub;
 
-    # can't do side_effect and return_value in one pass (yet)
-
-    if (defined $self->{return_value} && defined $self->{side_effect}){
-        die "use only one of return_value or side_effect";
-    }
-
     # side_effect must be a legit code reference
 
     if (defined $self->{side_effect} && ref $self->{side_effect} ne 'CODE'){
@@ -46,7 +40,10 @@ sub mock {
         *$sub = sub {
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
-            return $self->{side_effect}->() if $self->{side_effect};
+            if ($self->{side_effect}) {
+                my $return = $self->{side_effect}->();
+                return $return if defined $return;
+            }
             return $self->{return_value} if defined $self->{return_value};
         };
     }
@@ -206,7 +203,14 @@ return_value: Set this to have the mocked sub return anything you wish.
 side_effect: Send in a code reference containing an action you'd like the
 mocked sub to perform (C<die()> is useful for testing with C<eval()>).
 
-Note that only one of these parameters may be sent in at a time.
+You can use both side_effect and return_value params at the same time.
+side_effect will be run first, and then return_value. Note that if
+side_effect's last expression evaluates to any value whatsoever (even false),
+it will return that and return_value will be skipped.
+
+To work around this and have the side_effect run but still get the
+return_value thereafter, write your cref to evaluate undef as the last thing
+it does: C<sub {...; undef; }>.
 
 =head2 C<called>
 
