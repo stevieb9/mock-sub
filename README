@@ -1,46 +1,58 @@
+NAME
+
+    Mock::Sub - Mock module, package, object and standard subroutines, with
+    unit testing in mind.
+
 SYNOPSIS
+
         # see EXAMPLES for a full use case and caveats
-
+    
         use Mock::Sub;
-
+    
         my $foo = Mock::Sub->mock('Package::foo');
-        my $bar = Mock::Sub->mock('Package::bar');
-        my $baz = Mock::Sub->mock('Package::baz');
-
+    
         # wait until the mocked sub is called
-
+    
         Package::foo();
-
+    
         # then...
-
+    
         $foo->name;         # name of sub that's mocked
         $foo->called;       # was the sub called?
-        $foo->call_count;   # how many times was it called?
-
+        $foo->called_count; # how many times was it called?
+        $foo->called_with;  # array of params sent to sub
+    
         # create a mock object to reduce typing when multiple subs
         # are mocked
-
+    
         my $mock = Mock::Sub->new;
-
+    
         my $foo = $mock->mock('Package::foo');
         my $bar = $mock->mock('Package::bar');
-
-        # have the mocked sub return something when it's called
-
-        my $foo = $mock->mock('Package::foo', return_value => 'True');
+    
+        # have the mocked sub return something when it's called (you can use void
+        # context if you don't need the functionality of the object)
+    
+        $mock->mock('Package::foo', return_value => 'True');
         my $return = Package::foo;
-
-        # have the mocked sub perform an action
-
-        $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
-        Package::foo;
+    
+        # have the mocked sub perform an action (void context again)
+    
+        $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+        eval { Package::foo; };
         print 'died' if $@;
-
+    
+        # extract the parameters the sub was called with (best if you know what
+        # the original sub is expecting)
+    
+        my @args = $foo->called_with;
+    
         # reset the mocked sub for re-use within the same scope
-
+    
         $foo->reset;
 
 DESCRIPTION
+
     Easy to use and very lightweight module for mocking out sub calls. Very
     useful for testing areas of your own modules where getting coverage may
     be difficult due to nothing to test against, and/or to reduce test run
@@ -48,11 +60,12 @@ DESCRIPTION
     need to test.
 
 EXAMPLE
+
     Here's a full example to get further coverage where it's difficult if
     not impossible to test certain areas of your code (eg: you have if/else
     statements, but they don't do anything but call other subs. You don't
-    want to test the subs that are called, nor do you want to add statements
-    to your code).
+    want to test the subs that are called, nor do you want to add
+    statements to your code).
 
     Note that if the end subroutine you're testing is NOT Object Oriented
     (and you're importing them into your module that you're testing), you
@@ -60,18 +73,18 @@ EXAMPLE
     Other::first, you'd mock MyModule::first).
 
        # module you're testing:
-
-        package MyPackage;
     
+        package MyPackage;
+        
         use Other;
         use Exporter qw(import);
         @EXPORT_OK = qw(test);
-   
+       
         my $other = Other->new;
-
+    
         sub test {
             my $arg = shift;
-        
+            
             if ($arg == 1){
                 # how do you test this... there's no return etc.
                 $other->first();        
@@ -80,85 +93,115 @@ EXAMPLE
                 $other->second();
             }
         }
-
+    
         # your test file
-
+    
         use MyPackage qw(test);
         use Mock::Sub;
         use Test::More tests => 2;
-
+    
         my $mock = Mock::Sub->new;
-
+    
         my $first = $mock->mock('Other::first');
         my $second = $mock->mock('Other::second');
-
+    
         # coverage for first if() in MyPackage::test
         test(1);
         is ($first->called, 1, "1st if() statement covered");
-
+    
         # coverage for second if()
         test(2);
         is ($second->called, 1, "2nd if() statement covered");
 
 METHODS
-  `new'
+
+ new
+
     Instantiates and returns a new Mock::Sub object.
 
-  `mock('sub', %opts)'
+ mock('sub', %opts)
+
     Instantiates a new object on each call. 'sub' is the name of the
     subroutine to mock (requires full package name if the sub isn't in
-    `main::').
+    main::).
 
     Options:
 
-    return_value: Set this to have the mocked sub return anything you wish.
+    return_value
 
-    side_effect: Send in a code reference containing an action you'd like
-    the mocked sub to perform (`die()' is useful for testing with `eval()').
+      Set this to have the mocked sub return anything you wish.
 
-    Note that only one of these parameters may be sent in at a time.
+    side_effect
 
-  `called'
+      Send in a code reference containing an action you'd like the mocked
+      sub to perform (die() is useful for testing with eval()).
+
+      You can use both side_effect and return_value params at the same
+      time. side_effect will be run first, and then return_value. Note that
+      if side_effect's last expression evaluates to any value whatsoever
+      (even false), it will return that and return_value will be skipped.
+
+      To work around this and have the side_effect run but still get the
+      return_value thereafter, write your cref to evaluate undef as the
+      last thing it does: sub {...; undef; }.
+
+ called
+
     Returns true if the sub being mocked has been called.
 
-  `call_count'
+ called_count
+
     Returns the number of times the mocked sub has been called.
 
-  `name'
-    Returns the full name of the sub being mocked, as entered into `mock()'.
+ called_with
 
-  `reset'
-    Resets the functional parameters (`return_value', `side_effect'), along
-    with `called()' and `call_count' back to undef/untrue.
+    Returns an array of the parameters sent to the subroutine.
+
+ name
+
+    Returns the full name of the sub being mocked, as entered into mock().
+
+ reset
+
+    Resets the functional parameters (return_value, side_effect), along
+    with called() and called_count back to undef/untrue.
 
 NOTES
-    I didn't make this a `Test::' module (although it started that way)
+
+    I didn't make this a Test:: module (although it started that way)
     because I can see more uses than placing it into that category.
 
 AUTHOR
-    Steve Bertrand, `<steveb at cpan.org>'
+
+    Steve Bertrand, <steveb at cpan.org>
 
 BUGS
+
     Please report any bugs or requests at
     https://github.com/stevieb9/mock-sub/issues
 
 REPOSITORY
+
     https://github.com/stevieb9/mock-sub
 
 BUILD RESULTS
+
     Travis-CI: https://travis-ci.org/stevieb9/mock-sub
 
     CPAN Testers: http://matrix.cpantesters.org/?dist=Mock-Sub
 
 SUPPORT
+
     You can find documentation for this module with the perldoc command.
 
         perldoc Mock::Sub
 
 ACKNOWLEDGEMENTS
+
     Python's MagicMock module.
 
 LICENSE AND COPYRIGHT
+
     Copyright 2015 Steve Bertrand.
 
     This program is free software; you can redistribute it and/or modify it

@@ -198,9 +198,15 @@ to mock (requires full package name if the sub isn't in C<main::>).
 
 Options:
 
-return_value: Set this to have the mocked sub return anything you wish.
+=over 4
 
-side_effect: Send in a code reference containing an action you'd like the
+=item C<return_value>
+
+Set this to have the mocked sub return anything you wish.
+
+=item C<side_effect>
+
+Send in a code reference containing an action you'd like the
 mocked sub to perform (C<die()> is useful for testing with C<eval()>).
 
 You can use both side_effect and return_value params at the same time.
@@ -211,6 +217,8 @@ it will return that and return_value will be skipped.
 To work around this and have the side_effect run but still get the
 return_value thereafter, write your cref to evaluate undef as the last thing
 it does: C<sub {...; undef; }>.
+
+=back
 
 =head2 C<called>
 
