@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 use lib 't/data';
 
@@ -27,4 +27,10 @@ BEGIN {
 {
     eval {Mock::Sub->mock('One::foo', side_effect => sub {}, return_value => 1);};
     like ($@, qr/use only one of/, "mock() dies if both side_effect and return_value are supplied");
+}
+{
+    my $cref = sub {50};
+    my $foo = Mock::Sub->mock('One::foo', side_effect => $cref);
+    my $ret = Two::test;
+    is ($ret, 50, "side_effect properly returns a value if die() isn't called")
 }

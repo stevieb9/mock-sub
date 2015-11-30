@@ -17,6 +17,8 @@ sub mock {
     my $sub = shift;
     %{ $self } = @_;
 
+    $self->{name} = $sub;
+
     # can't do side_effect and return_value in one pass (yet)
 
     if (defined $self->{return_value} && defined $self->{side_effect}){
@@ -36,10 +38,9 @@ sub mock {
         no warnings 'redefine';
 
         *$sub = sub {
-            $self->{name} = $sub;
-            $self->{call_count} = ++$called; 
+            $self->{call_count} = ++$called;
+            return $self->{side_effect}->() if $self->{side_effect};
             return $self->{return_value} if defined $self->{return_value};
-            $self->{side_effect}->() if $self->{side_effect};
         };
     }
     return $self;
@@ -102,7 +103,7 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     # have the mocked sub perform an action
 
     $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
-    Package::foo;
+    eval { Package::foo; };
     print 'died' if $@;
 
     # reset the mocked sub for re-use within the same scope
