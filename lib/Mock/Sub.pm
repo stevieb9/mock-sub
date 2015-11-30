@@ -75,7 +75,6 @@ Mock::Sub - Mock package, module, object and standard subroutines, with ability 
 
     my $foo = Mock::Sub->mock('Package::foo');
     my $bar = Mock::Sub->mock('Package::bar');
-    my $baz = Mock::Sub->mock('Package::baz');
 
     # wait until the mocked sub is called
 
