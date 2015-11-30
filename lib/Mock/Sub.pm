@@ -98,14 +98,15 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     my $foo = $mock->mock('Package::foo');
     my $bar = $mock->mock('Package::bar');
 
-    # have the mocked sub return something when it's called
+    # have the mocked sub return something when it's called (you can use void
+    # context if you don't need the functionality of the object)
 
-    my $foo = $mock->mock('Package::foo', return_value => 'True');
+    $mock->mock('Package::foo', return_value => 'True');
     my $return = Package::foo;
 
-    # have the mocked sub perform an action
+    # have the mocked sub perform an action (void context again)
 
-    $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+    $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
     eval { Package::foo; };
     print 'died' if $@;
 
