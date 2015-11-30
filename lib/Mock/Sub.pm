@@ -36,6 +36,8 @@ sub mock {
         no strict 'refs';
         no warnings 'redefine';
 
+        $self->{orig} = \&$sub;
+
         *$sub = sub {
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
@@ -47,6 +49,16 @@ sub mock {
         };
     }
     return $self;
+}
+sub unmock {
+    my $self = shift;
+    my $sub = $self->{name};
+
+    {
+        no strict 'refs';
+        no warnings 'redefine';
+        *$sub = \&{$self->{orig}};
+    }
 }
 sub called {
     return shift->called_count ? 1 : 0;
@@ -121,6 +133,10 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     # reset the mocked sub for re-use within the same scope
 
     $foo->reset;
+
+    # restore original functionality to the sub
+
+    $foo->unmock;
 
 
 =head1 DESCRIPTION
@@ -218,6 +234,10 @@ return_value thereafter, write your cref to evaluate undef as the last thing
 it does: C<sub {...; undef; }>.
 
 =back
+
+=head2 C<unmock>
+
+Restores the original functionality back to the sub.
 
 =head2 C<called>
 

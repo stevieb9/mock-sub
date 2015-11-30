@@ -5,12 +5,12 @@ sub new {
 }
 
 sub foo {
-    print "in One::foo\n";
+    return "foo";
 }
 sub bar {
-    print "in One::bar\n";
+    return "bar";
 }
 sub baz {
-    print "in One::baz\n";
+    return "baz";
 }
 1;
