@@ -59,7 +59,7 @@ sub reset {
         delete $self->{$_};
     }
 }
-sub _end {}; # vim placeholder
+sub _end {}; # vim fold placeholder
 
 1;
 =head1 NAME
