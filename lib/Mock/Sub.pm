@@ -79,7 +79,6 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     use Mock::Sub;
 
     my $foo = Mock::Sub->mock('Package::foo');
-    my $bar = Mock::Sub->mock('Package::bar');
 
     # wait until the mocked sub is called
 
@@ -109,6 +108,11 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
     eval { Package::foo; };
     print 'died' if $@;
+
+    # extract the parameters the sub was called with (best if you know what
+    # the original sub is expecting
+
+    my @args = $foo->called_with;
 
     # reset the mocked sub for re-use within the same scope
 
@@ -203,6 +207,10 @@ Returns true if the sub being mocked has been called.
 =head2 C<call_count>
 
 Returns the number of times the mocked sub has been called.
+
+=head2 C<called_with>
+
+Returns an array of the parameters sent to the subroutine.
 
 =head2 C<name>
 
