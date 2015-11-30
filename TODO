@@ -1,6 +1,3 @@
-- test void context
-- fix eval{} in SYN (bug open)
-- fix other bugs
 - seriously review pod and thoroughly test SYN and EXA
 - recreate the entire example in examples/
 - 

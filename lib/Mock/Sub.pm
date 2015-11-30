@@ -17,6 +17,8 @@ sub mock {
     my $sub = shift;
     %{ $self } = @_;
 
+    $sub = "main::$sub" if $sub !~ /::/;
+
     if (! exists &$sub){
         die "subroutine specified is not valid";
     }
@@ -92,7 +94,8 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     $foo->name;         # name of sub that's mocked
     $foo->called;       # was the sub called?
-    $foo->called_count;   # how many times was it called?
+    $foo->called_count; # how many times was it called?
+    $foo->called_with;  # array of params sent to sub
 
     # create a mock object to reduce typing when multiple subs
     # are mocked
@@ -115,7 +118,7 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     print 'died' if $@;
 
     # extract the parameters the sub was called with (best if you know what
-    # the original sub is expecting
+    # the original sub is expecting)
 
     my @args = $foo->called_with;
 

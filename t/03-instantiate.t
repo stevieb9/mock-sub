@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 use lib 't/data';
 
@@ -62,4 +62,13 @@ BEGIN {
 {
     eval { my $test = Mock::Sub->mock('X::Yes'); };
     like ($@, qr/subroutine specified is not valid/, "dies if invalid sub param");
+}
+{
+    eval { Mock::Sub->mock('testing', return_value => 'True'); };
+    is ($@, '', "sub param automatically gets main:: if necessary");
+    is (testing(), 'True', "sub in main:: is called properly")
+}
+
+sub testing {
+    print "test";
 }
