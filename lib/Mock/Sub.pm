@@ -28,7 +28,7 @@ sub mock {
     # side_effect must be a legit code reference
 
     if (defined $self->{side_effect} && ref $self->{side_effect} ne 'CODE'){
-        die "side_effect param must be a cref";
+        die "side_effect parameter must be a code reference";
     }
 
     my $called;
