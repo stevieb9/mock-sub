@@ -51,10 +51,10 @@ BEGIN {
     Two::test; 
 
     is ($foo->called, 1, "before reset, called == 1");
-    is ($foo->call_count, 2, "before reset, call_count == 2");
+    is ($foo->called_count, 2, "before reset, called_count == 2");
 
     $foo->reset;
 
     is ($foo->called, 0, "after reset, called == 0");
-    is ($foo->call_count, undef, "after reset, call_count == 0");
+    is ($foo->called_count, undef, "after reset, called_count == 0");
 }

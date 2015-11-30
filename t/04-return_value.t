@@ -17,6 +17,6 @@ BEGIN {
     Two::test;
     my $ret = Two::test;
 
-    is ($foo->call_count, 2, "mock obj with return_value has right call count");
+    is ($foo->called_count, 2, "mock obj with return_value has right call count");
     is ($ret, 'True', "mock obj with return_value has right ret val");
 }

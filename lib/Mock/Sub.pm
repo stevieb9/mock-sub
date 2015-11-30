@@ -39,7 +39,7 @@ sub mock {
 
         *$sub = sub {
             @{ $self->{called_with} } = @_;
-            $self->{call_count} = ++$called;
+            $self->{called_count} = ++$called;
             return $self->{side_effect}->() if $self->{side_effect};
             return $self->{return_value} if defined $self->{return_value};
         };
@@ -47,10 +47,10 @@ sub mock {
     return $self;
 }
 sub called {
-    return shift->call_count ? 1 : 0;
+    return shift->called_count ? 1 : 0;
 }
-sub call_count {
-    return shift->{call_count};
+sub called_count {
+    return shift->{called_count};
 }
 sub called_with {
     return @{ shift->{called_with} };
@@ -60,7 +60,7 @@ sub name {
 }
 sub reset {
     my $self = shift;
-    for (qw(side_effect return_value called call_count)){
+    for (qw(side_effect return_value called called_count)){
         delete $self->{$_};
     }
 }
@@ -88,7 +88,7 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     $foo->name;         # name of sub that's mocked
     $foo->called;       # was the sub called?
-    $foo->call_count;   # how many times was it called?
+    $foo->called_count;   # how many times was it called?
 
     # create a mock object to reduce typing when multiple subs
     # are mocked
@@ -204,7 +204,7 @@ Note that only one of these parameters may be sent in at a time.
 
 Returns true if the sub being mocked has been called.
 
-=head2 C<call_count>
+=head2 C<called_count>
 
 Returns the number of times the mocked sub has been called.
 
@@ -219,7 +219,7 @@ Returns the full name of the sub being mocked, as entered into C<mock()>.
 =head2 C<reset>
 
 Resets the functional parameters (C<return_value>, C<side_effect>), along
-with C<called()> and C<call_count> back to undef/untrue.
+with C<called()> and C<called_count> back to undef/untrue.
 
 =head1 NOTES
 

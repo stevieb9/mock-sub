@@ -17,7 +17,7 @@ BEGIN {
     is (ref $test, 'Mock::Sub', "instantiating with mock() works");
 
     Two::test;
-    is ($test->call_count, 1, "instantiating with mock() can call methods");
+    is ($test->called_count, 1, "instantiating with mock() can call methods");
 }
 {# new() instantiate
 
@@ -26,7 +26,7 @@ BEGIN {
 
     my $test = $mock->mock('One::foo');
     Two::test;
-    is ($test->call_count, 1, "instantiating within an object works");
+    is ($test->called_count, 1, "instantiating within an object works");
 }
 { 
 
@@ -44,9 +44,9 @@ BEGIN {
     Two::test3;
     Two::test3;
 
-    is ($test1->call_count, 1, "1st mock from object does the right thing");
-    is ($test2->call_count, 2, "2nd mock from object does the right thing");
-    is ($test3->call_count, 3, "3rd mock from object does the right thing");
+    is ($test1->called_count, 1, "1st mock from object does the right thing");
+    is ($test2->called_count, 2, "2nd mock from object does the right thing");
+    is ($test3->called_count, 3, "3rd mock from object does the right thing");
 
     Two::test;
     Two::test2;
@@ -55,7 +55,7 @@ BEGIN {
     Two::test3;
     Two::test3;
 
-    is ($test1->call_count, 2, "2nd 1st mock from object does the right thing");
-    is ($test2->call_count, 4, "2nd 2nd mock from object does the right thing");
-    is ($test3->call_count, 6, "2nd 3rd mock from object does the right thing");
+    is ($test1->called_count, 2, "2nd 1st mock from object does the right thing");
+    is ($test2->called_count, 4, "2nd 2nd mock from object does the right thing");
+    is ($test3->called_count, 6, "2nd 3rd mock from object does the right thing");
 }

@@ -11,17 +11,17 @@ BEGIN {
     use_ok('Mock::Sub');
 };
 
-{# call_count()
+{# called_count()
 
     my $test = Mock::Sub->mock('One::foo');
 
     Two::test;
-    is ($test->call_count, 1, "count() does the right thing after one call");
+    is ($test->called_count, 1, "count() does the right thing after one call");
 
     Two::test;
     Two::test;
     Two::test;
     Two::test;
-    is ($test->call_count, 5, "count() does the right thing after one call");
+    is ($test->called_count, 5, "count() does the right thing after one call");
 }
 
