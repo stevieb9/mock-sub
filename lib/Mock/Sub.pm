@@ -19,10 +19,8 @@ sub mock {
     $sub = "main::$sub" if $sub !~ /::/;
 
     if (! exists &$sub){
-        die "subroutine specified is not valid";
+        die "subroutine specified is not valid. Did you forget package name?";
     }
-
-    $self->{name} = $sub;
 
     # side_effect must be a legit code reference
 
@@ -30,13 +28,14 @@ sub mock {
         die "side_effect parameter must be a code reference";
     }
 
+    $self->{name} = $sub;
+    $self->{orig} = \&$sub;
+
     my $called;
 
     {
         no strict 'refs';
         no warnings 'redefine';
-
-        $self->{orig} = \&$sub;
 
         *$sub = sub {
             @{ $self->{called_with} } = @_;
@@ -57,8 +56,10 @@ sub unmock {
     {
         no strict 'refs';
         no warnings 'redefine';
-        *$sub = \&{$self->{orig}};
+        *$sub = \&{ $self->{orig} };
     }
+    delete $self->{orig};
+    $self->reset;
 }
 sub called {
     return shift->called_count ? 1 : 0;
@@ -237,7 +238,8 @@ it does: C<sub {...; undef; }>.
 
 =head2 C<unmock>
 
-Restores the original functionality back to the sub.
+Restores the original functionality back to the sub, and runs C<reset()> on
+the object.
 
 =head2 C<called>
 
@@ -258,7 +260,7 @@ Returns the full name of the sub being mocked, as entered into C<mock()>.
 =head2 C<reset>
 
 Resets the functional parameters (C<return_value>, C<side_effect>), along
-with C<called()> and C<called_count> back to undef/untrue.
+with C<called()> and C<called_count()> back to undef/false.
 
 =head1 NOTES
 
