@@ -3,6 +3,9 @@ Revision history for Mock-Sub
 0.08    2015-11-30
         - fixes bug #3: add eval() in side_effect in SYNOPSIS
         - fixes bug #2: having side_effect after return_value breaks t/06
+        - fixes bug #1: add called_with(), to extract the args passed in to
+          the mocked sub
+
 
 0.07    2015-11-29
         - code cleanup

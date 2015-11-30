@@ -38,6 +38,7 @@ sub mock {
         no warnings 'redefine';
 
         *$sub = sub {
+            @{ $self->{called_with} } = @_;
             $self->{call_count} = ++$called;
             return $self->{side_effect}->() if $self->{side_effect};
             return $self->{return_value} if defined $self->{return_value};
@@ -50,6 +51,9 @@ sub called {
 }
 sub call_count {
     return shift->{call_count};
+}
+sub called_with {
+    return @{ shift->{called_with} };
 }
 sub name {
     return shift->{name};  
