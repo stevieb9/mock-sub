@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 use lib 't/data';
 
@@ -58,4 +58,8 @@ BEGIN {
     is ($test1->called_count, 2, "2nd 1st mock from object does the right thing");
     is ($test2->called_count, 4, "2nd 2nd mock from object does the right thing");
     is ($test3->called_count, 6, "2nd 3rd mock from object does the right thing");
+}
+{
+    eval { my $test = Mock::Sub->mock('X::Yes'); };
+    like ($@, qr/subroutine specified is not valid/, "dies if invalid sub param");
 }

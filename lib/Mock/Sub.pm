@@ -17,6 +17,10 @@ sub mock {
     my $sub = shift;
     %{ $self } = @_;
 
+    if (! exists &$sub){
+        die "subroutine specified is not valid";
+    }
+
     $self->{name} = $sub;
 
     # can't do side_effect and return_value in one pass (yet)
