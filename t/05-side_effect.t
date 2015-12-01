@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 10;
 
 use lib 't/data';
 
@@ -14,7 +14,7 @@ BEGIN {
 {# side_effect
     
     my $cref = sub {die "throwing error";};
-    my $foo = Mock::Sub->mock('One::foo', side_effect => $cref);
+    Mock::Sub->mock('One::foo', side_effect => $cref);
     eval{Two::test;};
     like ($@, qr/throwing error/, "side_effect with a cref works");
 }
@@ -52,3 +52,27 @@ BEGIN {
     my $ret = Two::test;
     is ($ret, 'True', "side_effect with no value, return_value returns");
 }
+{
+    my $foo = Mock::Sub->mock('One::foo');
+    my $ret = Two::test;
+
+    is ($ret, '', "no side effect set yet");
+
+    $foo->side_effect(sub {50});
+
+    $ret = Two::test;
+
+    is ($ret, 50, "side_effect() can add an effect after instantiation");
+
+}
+{
+    my $foo = Mock::Sub->mock('One::foo');
+
+    eval { $foo->side_effect(10); };
+
+    like ($@, qr/side_effect parameter/,
+          "side_effect() can add an effect after instantiation"
+    );
+
+}
+

@@ -47,9 +47,21 @@ SYNOPSIS
     
         my @args = $foo->called_with;
     
+        # add/change/remove the side_effect after instantiation
+    
+        $foo->side_effect(sub {die;});
+    
+        # add/change/remove the return_value after instantiation
+    
+        $foo->return_value(50);
+    
         # reset the mocked sub for re-use within the same scope
     
         $foo->reset;
+    
+        # restore original functionality to the sub
+    
+        $foo->unmock;
 
 DESCRIPTION
 
@@ -145,6 +157,11 @@ METHODS
       return_value thereafter, write your cref to evaluate undef as the
       last thing it does: sub {...; undef; }.
 
+ unmock
+
+    Restores the original functionality back to the sub, and runs reset()
+    on the object.
+
  called
 
     Returns true if the sub being mocked has been called.
@@ -161,10 +178,21 @@ METHODS
 
     Returns the full name of the sub being mocked, as entered into mock().
 
+ side_effect($cref)
+
+    Add (or remove) a side effect after instantiation. Same rules apply
+    here as they do for the side_effect parameter.
+
+ return_value
+
+    Add (or change, delete) the mocked sub's return value after
+    instantiation. Takes a single parameter, which can be anything you want
+    it to be. Send in undef to remove a previously set value.
+
  reset
 
     Resets the functional parameters (return_value, side_effect), along
-    with called() and called_count back to undef/untrue.
+    with called() and called_count() back to undef/false.
 
 NOTES
 

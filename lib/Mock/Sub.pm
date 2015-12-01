@@ -26,11 +26,7 @@ sub mock {
              "the specified sub does not exist.\n\n";
     }
 
-    # side_effect must be a legit code reference
-
-    if (defined $self->{side_effect} && ref $self->{side_effect} ne 'CODE'){
-        die "side_effect parameter must be a code reference";
-    }
+    $self->_check_side_effect($self->{side_effect});
 
     $self->{name} = $sub;
     $self->{orig} = \&$sub if ! $fake;
@@ -84,9 +80,20 @@ sub name {
     return shift->{name};  
 }
 sub reset {
-    my $self = shift;
     for (qw(side_effect return_value called called_count called_with)){
-        delete $self->{$_};
+        delete $_[0]->{$_};
+    }
+}
+sub return_value {
+    $_[0]->{return_value} = $_[1];
+}
+sub side_effect {
+    $_[0]->_check_side_effect($_[1]);
+    $_[0]->{side_effect} = $_[1];
+}
+sub _check_side_effect {
+    if (defined $_[1] && ref $_[1] ne 'CODE') {
+        die "side_effect parameter must be a code reference";
     }
 }
 sub _end {}; # vim fold placeholder
@@ -140,6 +147,14 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     # the original sub is expecting)
 
     my @args = $foo->called_with;
+
+    # add/change/remove the side_effect after instantiation
+
+    $foo->side_effect(sub {die;});
+
+    # add/change/remove the return_value after instantiation
+
+    $foo->return_value(50);
 
     # reset the mocked sub for re-use within the same scope
 
@@ -266,6 +281,17 @@ Returns an array of the parameters sent to the subroutine.
 =head2 C<name>
 
 Returns the full name of the sub being mocked, as entered into C<mock()>.
+
+=head2 C<side_effect($cref)>
+
+Add (or remove) a side effect after instantiation. Same rules apply here as
+they do for the C<side_effect> parameter.
+
+=head2 C<return_value>
+
+Add (or change, delete) the mocked sub's return value after instantiation.
+Takes a single parameter, which can be anything you want it to be. Send in
+C<undef> to remove a previously set value.
 
 =head2 C<reset>
 
