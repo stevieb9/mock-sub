@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 use lib 't/data';
 
@@ -60,13 +60,22 @@ BEGIN {
     is ($test3->called_count, 6, "2nd 3rd mock from object does the right thing");
 }
 {
-    eval { my $test = Mock::Sub->mock('X::Yes'); };
-    like ($@, qr/subroutine specified is not valid/, "dies if invalid sub param");
+    my $warn;
+    $SIG{__WARN__} = sub {$warn = 'warned'};
+    Mock::Sub->mock('X::Yes');
+    is ($warn, 'warned', "mocking a non-existent sub results in a warning");
 }
 {
     eval { Mock::Sub->mock('testing', return_value => 'True'); };
     is ($@, '', "sub param automatically gets main:: if necessary");
     is (testing(), 'True', "sub in main:: is called properly")
+}
+{
+    $SIG{__WARN__} = sub {};
+    my $mock = Mock::Sub->new;
+    my $fake = $mock->mock('X::y', return_value => 'true');
+    my $ret = X::y();
+    is ($ret, 'true', "successfully mocked a non-existent sub")
 }
 
 sub testing {

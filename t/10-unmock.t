@@ -31,3 +31,14 @@ BEGIN {
     is ($ret, 'foo', "One::foo is now unmocked again");
 }
 
+{
+    $SIG{__WARN__} = sub {};
+    my $mock = Mock::Sub->new;
+    my $fake = $mock->mock('X::y', return_value => 'true');
+    my $ret = X::y();
+    is ($ret, 'true', "successfully mocked a non-existent sub");
+    is ($fake->{orig}, undef, "fake mock doesn't keep sub history");
+    print %X::;
+    $mock->unmock;
+    print %X::;
+}

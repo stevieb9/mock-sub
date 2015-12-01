@@ -1,5 +1,9 @@
 Revision history for Mock-Sub
 
+0.09    xxx
+        - mocking a non-existent sub is now allowed, and spits out a warning
+          message
+
 0.08    2015-11-30
         - fixes bug #3: add eval() in side_effect in SYNOPSIS
         - fixes bug #2: having side_effect after return_value breaks t/06

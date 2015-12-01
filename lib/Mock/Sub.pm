@@ -18,8 +18,12 @@ sub mock {
 
     $sub = "main::$sub" if $sub !~ /::/;
 
+    my $fake;
+
     if (! exists &$sub){
-        die "subroutine specified is not valid. Did you forget package name?";
+        $fake = 1;
+        warn "\n\nWARNING!: we've mocked a non-existent subroutine. " .
+             "the specified sub does not exist.\n\n";
     }
 
     # side_effect must be a legit code reference
@@ -29,7 +33,7 @@ sub mock {
     }
 
     $self->{name} = $sub;
-    $self->{orig} = \&$sub;
+    $self->{orig} = \&$sub if ! $fake;
 
     my $called;
 
@@ -56,7 +60,15 @@ sub unmock {
     {
         no strict 'refs';
         no warnings 'redefine';
-        *$sub = \&{ $self->{orig} };
+
+        if ($self->{orig}) {
+            *$sub = \&{ $self->{orig} };
+        }
+        else {
+            for (keys %{"${ $self->{name} }::"}){
+                delete ${"${ $self->{name} }::"}{$_};
+            }
+        }
     }
     delete $self->{orig};
     $self->reset;
