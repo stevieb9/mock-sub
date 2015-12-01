@@ -61,16 +61,14 @@ sub unmock {
         no strict 'refs';
         no warnings 'redefine';
 
-        if ($self->{orig}) {
+        if (defined $self->{orig}) {
             *$sub = \&{ $self->{orig} };
+            delete $self->{orig};
         }
         else {
-            for (keys %{"${ $self->{name} }::"}){
-                delete ${"${ $self->{name} }::"}{$_};
-            }
+            undef *$sub;
         }
     }
-    delete $self->{orig};
     $self->reset;
 }
 sub called {

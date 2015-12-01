@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 9;
 
 use lib 't/data';
 
@@ -35,10 +35,14 @@ BEGIN {
     $SIG{__WARN__} = sub {};
     my $mock = Mock::Sub->new;
     my $fake = $mock->mock('X::y', return_value => 'true');
+
     my $ret = X::y();
     is ($ret, 'true', "successfully mocked a non-existent sub");
     is ($fake->{orig}, undef, "fake mock doesn't keep sub history");
-    print %X::;
-    $mock->unmock;
-    print %X::;
+
+    $fake->unmock;
+    eval { X::y(); };
+    like ($@, qr/Undefined subroutine/,
+          "unmock() unloads the symtab entry for the faked sub"
+    );
 }

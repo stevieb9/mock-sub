@@ -3,6 +3,8 @@ Revision history for Mock-Sub
 0.09    xxx
         - mocking a non-existent sub is now allowed, and spits out a warning
           message
+        - unmock() removes the symtab entry if mock() created a fake
+          (non-existent) sub entry in the symbol table
 
 0.08    2015-11-30
         - fixes bug #3: add eval() in side_effect in SYNOPSIS
