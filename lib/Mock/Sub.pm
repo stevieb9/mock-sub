@@ -149,9 +149,16 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     my $bar = $mock->mock('Package::bar');
 
     # have the mocked sub return something when it's called (you can use void
-    # context if you don't need the functionality of the object)
+    # context if you don't need the functionality of the object).
+
+    # a single scalar only
 
     $mock->mock('Package::foo', return_value => 'True');
+
+    # or return a list:
+
+    $mock->return_value(1, 2, {a => 1});
+
     my $return = Package::foo;
 
     # have the mocked sub perform an action (void context again)
@@ -159,6 +166,10 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
     eval { Package::foo; };
     print 'died' if $@;
+
+    # add a side-effect after instantiation
+
+    $mock->side_effect(sub {print "hello, world!; });
 
     # extract the parameters the sub was called with (best if you know what
     # the original sub is expecting)
@@ -254,13 +265,17 @@ Instantiates and returns a new Mock::Sub object.
 Instantiates a new object on each call. 'sub' is the name of the subroutine
 to mock (requires full package name if the sub isn't in C<main::>).
 
+The mocked sub will return undef if a return value isn't set, or a side effect
+doesn't return anything.
+
 Options:
 
 =over 4
 
 =item C<return_value>
 
-Set this to have the mocked sub return anything you wish.
+Set this to have the mocked sub return anything you wish (accepts a single
+scalar only. See C<return_value()> method to return a list).
 
 =item C<side_effect>
 
@@ -307,8 +322,7 @@ they do for the C<side_effect> parameter.
 =head2 C<return_value>
 
 Add (or change, delete) the mocked sub's return value after instantiation.
-Takes a single parameter, which can be anything you want it to be. Send in
-C<undef> to remove a previously set value.
+Can be a scalar or list. Send in C<undef> to remove a previously set value.
 
 =head2 C<reset>
 
