@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More tests => 22;
 
 use lib 't/data';
 
@@ -58,4 +58,23 @@ BEGIN {
     is (ref \$args[0], 'SCALAR', "first arg is correct");
     is (ref $args[1], 'HASH', "second arg is correct");
     is (ref $args[2], 'ARRAY', "third arg is correct");
+}
+{
+    my $foo = Mock::Sub->mock('One::foo');
+
+    eval { my @args = $foo->called_with; };
+
+    like (
+        $@,
+        qr/can't call called_with/,
+        "called_with() dies if its called before the mocked sub has been"
+    );
+}
+{
+    my $foo = Mock::Sub->mock('One::foo');
+    One::foo();
+
+    my @args = $foo->called_with;
+
+    is (@args, 0, "called_with() returns an empty list if no params were used");
 }

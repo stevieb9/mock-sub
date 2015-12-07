@@ -187,7 +187,8 @@ METHODS
 
  called_with
 
-    Returns an array of the parameters sent to the subroutine.
+    Returns an array of the parameters sent to the subroutine. dies() if
+    we're called before the mocked sub has been called.
 
  name
 

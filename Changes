@@ -6,6 +6,8 @@ Revision history for Mock-Sub
         - fix issue #6: return_value() now accepts lists (however, using the
           param version of return_value, only a scalar is accepted). (Reported
           by Joel Berger (jberger)
+        - fix issue #8: called_with() now dies() if it's called before the
+          mocked sub has been (reported by Joel Berger (jberger)
 
 0.09    2015-12-01
         - mocking a non-existent sub is now allowed, and spits out a warning

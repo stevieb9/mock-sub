@@ -85,7 +85,12 @@ sub called_count {
     return shift->{called_count};
 }
 sub called_with {
-    return @{ shift->{called_with} };
+    my $self = shift;
+    if (! $self->called){
+        die "\n\ncan't call called_with() before the mocked sub has " .
+            "been called\n";
+    }
+    return @{ $self->{called_with} };
 }
 sub name {
     return shift->{name};  
@@ -308,7 +313,8 @@ Returns the number of times the mocked sub has been called.
 
 =head2 C<called_with>
 
-Returns an array of the parameters sent to the subroutine.
+Returns an array of the parameters sent to the subroutine. C<dies()> if we're
+called before the mocked sub has been called.
 
 =head2 C<name>
 
