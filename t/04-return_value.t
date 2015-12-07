@@ -2,7 +2,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Data::Dumper;
+use Test::More tests => 11;
 
 use lib 't/data';
 
@@ -25,7 +26,7 @@ BEGIN {
     my $foo = Mock::Sub->mock('One::foo');
     my $ret = Two::test;
 
-    is ($ret, '', "no return_value set yet");
+    is ($ret, undef, "no return_value set yet");
 
     $foo->return_value(50);
     $ret = Two::test;
@@ -37,5 +38,16 @@ BEGIN {
 
     $foo->return_value(undef);
     $ret = Two::test;
-    is ($ret, '', "return_value() undef's the value properly");
+    is ($ret, undef, "return_value() undef's the value properly");
 }
+{# return_value
+
+    my $foo = Mock::Sub->mock('One::foo');
+    $foo->return_value(qw(1 2 3));
+    my @ret = One::foo;
+
+    is (@ret, 3, "return_value returns list when asked");
+    is ($ret[0], 1, "return_value list has correct data");
+    is ($ret[2], 3, "return_value list has correct data");
+}
+

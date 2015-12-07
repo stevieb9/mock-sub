@@ -3,6 +3,9 @@ Revision history for Mock-Sub
 0.10    xxxx
         - we now pass in any parameters passed to the mocked function into
           the side_effect cref (issue 5, reported by Joel Berger (jberger))
+        - fix issue #6: return_value() now accepts lists (however, using the
+          param version of return_value, only a scalar is accepted). (Reported
+          by Joel Berger (jberger)
 
 0.09    2015-12-01
         - mocking a non-existent sub is now allowed, and spits out a warning

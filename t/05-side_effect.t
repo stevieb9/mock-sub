@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Test::More tests => 15;
+use Test::More tests => 19;
 
 use lib 't/data';
 
@@ -57,7 +57,7 @@ BEGIN {
     my $foo = Mock::Sub->mock('One::foo');
     my $ret = Two::test;
 
-    is ($ret, '', "no side effect set yet");
+    is ($ret, undef, "no side effect set yet");
 
     $foo->side_effect(sub {50});
 
@@ -92,4 +92,20 @@ BEGIN {
     is (ref $ret->[2], 'HASH', 'side_effect 3rd arg is a hash');
     is ($ret->[2]{3}, 'a', 'side_effect args work properly')
 }
+{
+    my $foo = Mock::Sub->mock('One::foo');
 
+    $foo->side_effect(sub { return (1, 2, 3); } );
+
+    my @ret = One::foo();
+
+    is (ref \@ret, 'ARRAY', "in list context, side_effect returns array");
+    is (@ret, 3, "in list context, side_effect args has right count");
+
+    $foo->side_effect(sub { my %h=(a=>1, b=>2); return %h; } );
+
+    my %ret = One::foo();
+
+    is ($ret{a}, '1', "in list context, a hash is properly created if wanted");
+    is ($ret{b}, '2', "in list context, a hash is properly created if wanted");
+}

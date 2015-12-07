@@ -41,10 +41,21 @@ sub mock {
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
             if ($self->{side_effect}) {
-                my $effect = $self->{side_effect}->(@_);
-                return $effect if defined $effect;
+                if (wantarray){
+                    my @effect = $self->{side_effect}->(@_);
+                    return @effect if @effect;
+                }
+                else {
+                    my $effect = $self->{side_effect}->(@_);
+                    return $effect if defined $effect;
+                }
             }
-            return $self->{return_value} if defined $self->{return_value};
+            if (ref $self->{return_value} eq 'ARRAY') {
+                return @{ $self->{return_value} };
+            }
+            else {
+                return $self->{return_value} if $self->{return_value};
+            }
         };
     }
     return $self;
@@ -85,7 +96,13 @@ sub reset {
     }
 }
 sub return_value {
-    $_[0]->{return_value} = $_[1];
+    my $self = shift;
+    if (@_ == 1){
+        $self->{return_value} = $_[0];
+    }
+    else {
+        @{ $self->{return_value} } = @_;
+    }
 }
 sub side_effect {
     $_[0]->_check_side_effect($_[1]);
