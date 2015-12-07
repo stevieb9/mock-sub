@@ -1,15 +1,14 @@
 Revision history for Mock-Sub
 
-0.10    xxxx
-        - we now pass in any parameters passed to the mocked function into
-          the side_effect cref (issue 5, reported by Joel Berger (jberger))
+0.10    2015-12-07
+        - all bugs fixed in this release reported by Joel Berger (jberger)
+        - fix issue #5: we now pass in any parameters passed to the mocked
+          function into the side_effect cref
         - fix issue #6: return_value() now accepts lists (however, using the
-          param version of return_value, only a scalar is accepted). (Reported
-          by Joel Berger (jberger)
+          param version of return_value, only a scalar is accepted).
         - fix issue #8: called_with() now dies() if it's called before the
-          mocked sub has been (reported by Joel Berger (jberger)
-        - fix issue #7: mock sub is now much more context aware (reported by
-          Joel Berger (jberter)
+          mocked sub has been
+        - fix issue #7: mock sub is now much more context aware
         - fix issue #9: DESTROY() now unmock()s by default
           (keep_mock_on_destroy param to override)
 

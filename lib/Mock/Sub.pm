@@ -9,10 +9,11 @@ sub new {
     return bless {}, shift;
 }
 sub mock {
-    
-    shift; # throw away class/object
+
+    shift; # throw away object/class
 
     my $self = bless {}, __PACKAGE__;
+
     my $sub = shift;
     %{ $self } = @_;
 
@@ -30,7 +31,10 @@ sub mock {
     push @{ $self->{return} }, $self->{return_value};
 
     $self->{name} = $sub;
-    $self->{orig} = \&$sub if ! $fake;
+
+    if (! $fake) {
+        $self->{orig} = \&$sub;
+    }
 
     my $called;
 
@@ -154,28 +158,27 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     my $foo = $mock->mock('Package::foo');
     my $bar = $mock->mock('Package::bar');
 
-    # have the mocked sub return something when it's called (you can use void
-    # context if you don't need the functionality of the object).
+    # have the mocked sub return something when it's called
 
     # a single scalar only
 
-    $mock->mock('Package::foo', return_value => 'True');
+    my $foo = $mock->mock('Package::foo', return_value => 'True');
 
     # or return a list:
 
-    $mock->return_value(1, 2, {a => 1});
+    $foo->return_value(1, 2, {a => 1});
 
     my $return = Package::foo;
 
     # have the mocked sub perform an action (void context again)
 
-    $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+    my $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
     eval { Package::foo; };
     print 'died' if $@;
 
     # add a side-effect after instantiation
 
-    $mock->side_effect(sub {print "hello, world!; });
+    $foo->side_effect(sub {print "hello, world!; });
 
     # extract the parameters the sub was called with (best if you know what
     # the original sub is expecting)
@@ -347,6 +350,10 @@ with C<called()> and C<called_count()> back to undef/false.
 
 I didn't make this a C<Test::> module (although it started that way) because
 I can see more uses than placing it into that category.
+
+Do not use a C<new> mock object to call C<mock()> in void context. There will
+be no object returned, thus no way to manually C<unmock()> the sub, nor any
+way for automated cleanup to revert it back either.
 
 =head1 AUTHOR
 

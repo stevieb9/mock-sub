@@ -30,28 +30,27 @@ SYNOPSIS
         my $foo = $mock->mock('Package::foo');
         my $bar = $mock->mock('Package::bar');
     
-        # have the mocked sub return something when it's called (you can use void
-        # context if you don't need the functionality of the object).
+        # have the mocked sub return something when it's called
     
         # a single scalar only
     
-        $mock->mock('Package::foo', return_value => 'True');
+        my $foo = $mock->mock('Package::foo', return_value => 'True');
     
         # or return a list:
     
-        $mock->return_value(1, 2, {a => 1});
+        $foo->return_value(1, 2, {a => 1});
     
         my $return = Package::foo;
     
         # have the mocked sub perform an action (void context again)
     
-        $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+        my $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
         eval { Package::foo; };
         print 'died' if $@;
     
         # add a side-effect after instantiation
     
-        $mock->side_effect(sub {print "hello, world!; });
+        $foo->side_effect(sub {print "hello, world!; });
     
         # extract the parameters the sub was called with (best if you know what
         # the original sub is expecting)
@@ -70,7 +69,8 @@ SYNOPSIS
     
         $foo->reset;
     
-        # restore original functionality to the sub
+        # restore original functionality to the sub (we unmock() by default on
+        # DESTROY()
     
         $foo->unmock;
 
@@ -172,6 +172,12 @@ METHODS
       return_value thereafter, write your cref to evaluate undef as the
       last thing it does: sub {...; undef; }.
 
+    keep_mock_on_destroy
+
+      By default, we restore original sub functionality after the mock
+      object goes out of scope. You can keep the mocked sub in place by
+      setting this parameter to any true value.
+
  unmock
 
     Restores the original functionality back to the sub, and runs reset()
@@ -214,6 +220,10 @@ NOTES
 
     I didn't make this a Test:: module (although it started that way)
     because I can see more uses than placing it into that category.
+
+    Do not use a new mock object to call mock() in void context. There will
+    be no object returned, thus no way to manually unmock() the sub, nor
+    any way for automated cleanup to revert it back either.
 
 AUTHOR
 

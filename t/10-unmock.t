@@ -62,3 +62,15 @@ BEGIN {
     is ($post_destroy_ret, 'foo', "post_destroy value is $post_destroy_ret");
 
 }
+{
+    {
+        my $mock = Mock::Sub->new;
+
+        $mock->mock('One::foo', return_value => 'mock_foo');
+        $mock->mock('One::bar', return_value => 'mock_bar');
+
+    }
+
+#    print One::foo();
+#    print One::bar();
+}
