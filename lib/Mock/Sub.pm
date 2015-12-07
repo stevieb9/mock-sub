@@ -164,7 +164,8 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     my $foo = $mock->mock('Package::foo', return_value => 'True');
 
-    # or return a list:
+    # add/change/remove return_value after instantiation (note that with the
+    # return_value() method call, you can have a list returned
 
     $foo->return_value(1, 2, {a => 1});
 
@@ -176,22 +177,14 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     eval { Package::foo; };
     print 'died' if $@;
 
-    # add a side-effect after instantiation
+    # add/change/remove a side-effect after instantiation
 
-    $foo->side_effect(sub {print "hello, world!; });
+    $foo->side_effect(sub { print "hello, world!; });
 
     # extract the parameters the sub was called with (best if you know what
     # the original sub is expecting)
 
     my @args = $foo->called_with;
-
-    # add/change/remove the side_effect after instantiation
-
-    $foo->side_effect(sub {die;});
-
-    # add/change/remove the return_value after instantiation
-
-    $foo->return_value(50);
 
     # reset the mocked sub for re-use within the same scope
 
