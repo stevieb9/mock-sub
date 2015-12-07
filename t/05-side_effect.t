@@ -2,7 +2,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Data::Dumper;
+use Test::More tests => 15;
 
 use lib 't/data';
 
@@ -74,5 +75,21 @@ BEGIN {
           "side_effect() can add an effect after instantiation"
     );
 
+}
+{
+    my $foo = Mock::Sub->mock('One::foo');
+
+    my $cref = sub {
+        return \@_;
+    };
+    $foo->side_effect($cref);
+
+    my $ret = One::foo(1, 2, {3 => 'a'});
+
+    is (ref $ret, 'ARRAY', 'side_effect now has access to called_with() args');
+    is ($ret->[0], 1, 'side_effect 1st arg is 1');
+    is ($ret->[1], 2, 'side_effect 2nd arg is 2');
+    is (ref $ret->[2], 'HASH', 'side_effect 3rd arg is a hash');
+    is ($ret->[2]{3}, 'a', 'side_effect args work properly')
 }
 

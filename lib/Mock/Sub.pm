@@ -41,7 +41,7 @@ sub mock {
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
             if ($self->{side_effect}) {
-                my $effect = $self->{side_effect}->();
+                my $effect = $self->{side_effect}->(@_);
                 return $effect if defined $effect;
             }
             return $self->{return_value} if defined $self->{return_value};
