@@ -191,7 +191,7 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     $foo->reset;
 
     # restore original functionality to the sub (we unmock() by default on
-    # DESTROY()
+    # DESTROY())
 
     $foo->unmock;
 
@@ -292,7 +292,7 @@ it will return that and return_value will be skipped.
 
 To work around this and have the side_effect run but still get the
 return_value thereafter, write your cref to evaluate undef as the last thing
-it does: C<sub {...; undef; }>.
+it does: C<sub { ...; undef; }>.
 
 =item C<keep_mock_on_destroy>
 
