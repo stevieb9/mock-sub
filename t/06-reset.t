@@ -11,12 +11,13 @@ BEGIN {
     use_ok('Mock::Sub');
 };
 
-{# reset()
+{
+    # reset()
 
-    my $foo = Mock::Sub->mock('One::foo', return_value => 1);
+    my $foo = Mock::Sub->mock('One::foo', return_value => 99);
     my $ret1 = Two::test;
 
-    is ($ret1, 1, "before reset, return_value is ok");
+    is ($ret1, 99, "before reset, return_value is ok");
 
     $foo->reset;
 

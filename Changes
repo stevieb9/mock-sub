@@ -8,6 +8,8 @@ Revision history for Mock-Sub
           by Joel Berger (jberger)
         - fix issue #8: called_with() now dies() if it's called before the
           mocked sub has been (reported by Joel Berger (jberger)
+        - fix issue #7: mock sub is now much more context aware (reported by
+          Joel Berger (jberter)
 
 0.09    2015-12-01
         - mocking a non-existent sub is now allowed, and spits out a warning

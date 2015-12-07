@@ -27,6 +27,7 @@ sub mock {
     }
 
     $self->_check_side_effect($self->{side_effect});
+    push @{ $self->{return} }, $self->{return_value};
 
     $self->{name} = $sub;
     $self->{orig} = \&$sub if ! $fake;
@@ -50,12 +51,12 @@ sub mock {
                     return $effect if defined $effect;
                 }
             }
-            if (ref $self->{return_value} eq 'ARRAY') {
-                return @{ $self->{return_value} };
-            }
-            else {
-                return $self->{return_value} if $self->{return_value};
-            }
+
+            return undef if ! $self->{return};
+
+            return ! wantarray && @{ $self->{return} } == 1
+                ? $self->{return}[0]
+                : @{ $self->{return} };
         };
     }
     return $self;
@@ -96,18 +97,13 @@ sub name {
     return shift->{name};  
 }
 sub reset {
-    for (qw(side_effect return_value called called_count called_with)){
+    for (qw(side_effect return_value return called called_count called_with)){
         delete $_[0]->{$_};
     }
 }
 sub return_value {
     my $self = shift;
-    if (@_ == 1){
-        $self->{return_value} = $_[0];
-    }
-    else {
-        @{ $self->{return_value} } = @_;
-    }
+    @{ $self->{return} } = @_;
 }
 sub side_effect {
     $_[0]->_check_side_effect($_[1]);

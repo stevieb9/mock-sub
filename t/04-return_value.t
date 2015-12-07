@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Test::More tests => 11;
+use Test::More tests => 15;
 
 use lib 't/data';
 
@@ -49,5 +49,22 @@ BEGIN {
     is (@ret, 3, "return_value returns list when asked");
     is ($ret[0], 1, "return_value list has correct data");
     is ($ret[2], 3, "return_value list has correct data");
+}
+{# return_value
+
+    my $foo = Mock::Sub->mock('One::foo');
+    $foo->return_value('hello');
+    my @ret = One::foo;
+    my $ret = One::foo;
+
+    is (@ret, 1, "return_value returns list in context with only a scalar");
+    is ($ret[0], 'hello', "return_value list has correct data");
+    is ($ret, 'hello', "in scalar context with a single param, we get data");
+
+    $foo->return_value(qw(hello world));
+    $ret = One::foo();
+
+    is ($ret, 2, "in scalar context with list sent in, count is returned");
+
 }
 
