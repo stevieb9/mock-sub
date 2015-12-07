@@ -120,7 +120,7 @@ sub _check_side_effect {
 sub DESTROY {
     my $self = shift;
     if (defined $self->{orig} && ! $self->{keep_mock_on_destroy}) {
-        $self->unmock if !$self->{keep_mock_on_destroy};
+        $self->unmock if ! $self->{keep_mock_on_destroy};
     }
 }
 sub _end {}; # vim fold placeholder
@@ -170,7 +170,7 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     my $return = Package::foo;
 
-    # have the mocked sub perform an action (void context again)
+    # have the mocked sub perform an action
 
     my $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
     eval { Package::foo; };
