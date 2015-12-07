@@ -71,7 +71,6 @@ sub unmock {
 
         if (defined $self->{orig}) {
             *$sub = \&{ $self->{orig} };
-            delete $self->{orig};
         }
         else {
             undef *$sub;
@@ -112,6 +111,12 @@ sub side_effect {
 sub _check_side_effect {
     if (defined $_[1] && ref $_[1] ne 'CODE') {
         die "side_effect parameter must be a code reference";
+    }
+}
+sub DESTROY {
+    my $self = shift;
+    if (defined $self->{orig} && ! $self->{keep_mock_on_destroy}) {
+        $self->unmock if !$self->{keep_mock_on_destroy};
     }
 }
 sub _end {}; # vim fold placeholder
@@ -189,7 +194,8 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     $foo->reset;
 
-    # restore original functionality to the sub
+    # restore original functionality to the sub (we unmock() by default on
+    # DESTROY()
 
     $foo->unmock;
 
@@ -291,6 +297,12 @@ it will return that and return_value will be skipped.
 To work around this and have the side_effect run but still get the
 return_value thereafter, write your cref to evaluate undef as the last thing
 it does: C<sub {...; undef; }>.
+
+=item C<keep_mock_on_destroy>
+
+By default, we restore original sub functionality after the mock object goes
+out of scope. You can keep the mocked sub in place by setting this parameter
+to any true value.
 
 =back
 

@@ -10,6 +10,8 @@ Revision history for Mock-Sub
           mocked sub has been (reported by Joel Berger (jberger)
         - fix issue #7: mock sub is now much more context aware (reported by
           Joel Berger (jberter)
+        - fix issue #9: DESTROY() now unmock()s by default
+          (keep_mock_on_destroy param to override)
 
 0.09    2015-12-01
         - mocking a non-existent sub is now allowed, and spits out a warning
