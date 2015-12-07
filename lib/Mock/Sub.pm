@@ -3,6 +3,8 @@ use 5.006;
 use strict;
 use warnings;
 
+use Carp qw(croak);
+
 our $VERSION = '0.11';
 
 sub new {
@@ -11,6 +13,12 @@ sub new {
 sub mock {
 
     shift; # throw away object/class
+
+    # die if void context
+
+    if (! defined wantarray){
+        croak "\n\ncalling mock() in void context isn't allowed.";
+    }
 
     my $self = bless {}, __PACKAGE__;
 
@@ -91,8 +99,8 @@ sub called_count {
 sub called_with {
     my $self = shift;
     if (! $self->called){
-        die "\n\ncan't call called_with() before the mocked sub has " .
-            "been called\n";
+        croak "\n\ncan't call called_with() before the mocked sub has " .
+            "been called. ";
     }
     return @{ $self->{called_with} };
 }
@@ -114,7 +122,7 @@ sub side_effect {
 }
 sub _check_side_effect {
     if (defined $_[1] && ref $_[1] ne 'CODE') {
-        die "side_effect parameter must be a code reference";
+        croak "\n\nside_effect parameter must be a code reference. ";
     }
 }
 sub DESTROY {
@@ -265,8 +273,9 @@ Instantiates and returns a new Mock::Sub object.
 
 =head2 C<mock('sub', %opts)>
 
-Instantiates a new object on each call. 'sub' is the name of the subroutine
-to mock (requires full package name if the sub isn't in C<main::>).
+Instantiates a new object on each call (calling in void context is not
+allowed). 'sub' is the name of the subroutine to mock (requires full package
+name if the sub isn't in C<main::>).
 
 The mocked sub will return undef if a return value isn't set, or a side effect
 doesn't return anything.
@@ -343,10 +352,6 @@ with C<called()> and C<called_count()> back to undef/false.
 
 I didn't make this a C<Test::> module (although it started that way) because
 I can see more uses than placing it into that category.
-
-Do not use a C<new> mock object to call C<mock()> in void context. There will
-be no object returned, thus no way to manually C<unmock()> the sub, nor any
-way for automated cleanup to revert it back either.
 
 =head1 AUTHOR
 

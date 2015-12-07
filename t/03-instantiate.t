@@ -62,11 +62,11 @@ BEGIN {
 {
     my $warn;
     $SIG{__WARN__} = sub {$warn = 'warned'};
-    Mock::Sub->mock('X::Yes');
+    my $mock = Mock::Sub->mock('X::Yes');
     is ($warn, 'warned', "mocking a non-existent sub results in a warning");
 }
 {
-    eval { Mock::Sub->mock('testing', return_value => 'True'); };
+    eval { my $mock = Mock::Sub->mock('testing', return_value => 'True'); };
     is ($@, '', "sub param automatically gets main:: if necessary");
     is (testing(), 'True', "sub in main:: is called properly")
 }

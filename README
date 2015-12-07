@@ -36,41 +36,34 @@ SYNOPSIS
     
         my $foo = $mock->mock('Package::foo', return_value => 'True');
     
-        # or return a list:
+        # add/change/remove return_value after instantiation (note that with the
+        # return_value() method call, you can have a list returned
     
         $foo->return_value(1, 2, {a => 1});
     
         my $return = Package::foo;
     
-        # have the mocked sub perform an action (void context again)
+        # have the mocked sub perform an action
     
         my $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
         eval { Package::foo; };
         print 'died' if $@;
     
-        # add a side-effect after instantiation
+        # add/change/remove a side-effect after instantiation
     
-        $foo->side_effect(sub {print "hello, world!; });
+        $foo->side_effect(sub { print "hello, world!; });
     
         # extract the parameters the sub was called with (best if you know what
         # the original sub is expecting)
     
         my @args = $foo->called_with;
     
-        # add/change/remove the side_effect after instantiation
-    
-        $foo->side_effect(sub {die;});
-    
-        # add/change/remove the return_value after instantiation
-    
-        $foo->return_value(50);
-    
         # reset the mocked sub for re-use within the same scope
     
         $foo->reset;
     
         # restore original functionality to the sub (we unmock() by default on
-        # DESTROY()
+        # DESTROY())
     
         $foo->unmock;
 
@@ -144,9 +137,9 @@ METHODS
 
  mock('sub', %opts)
 
-    Instantiates a new object on each call. 'sub' is the name of the
-    subroutine to mock (requires full package name if the sub isn't in
-    main::).
+    Instantiates a new object on each call (calling in void context is not
+    allowed). 'sub' is the name of the subroutine to mock (requires full
+    package name if the sub isn't in main::).
 
     The mocked sub will return undef if a return value isn't set, or a side
     effect doesn't return anything.
@@ -170,7 +163,7 @@ METHODS
 
       To work around this and have the side_effect run but still get the
       return_value thereafter, write your cref to evaluate undef as the
-      last thing it does: sub {...; undef; }.
+      last thing it does: sub { ...; undef; }.
 
     keep_mock_on_destroy
 
@@ -220,10 +213,6 @@ NOTES
 
     I didn't make this a Test:: module (although it started that way)
     because I can see more uses than placing it into that category.
-
-    Do not use a new mock object to call mock() in void context. There will
-    be no object returned, thus no way to manually unmock() the sub, nor
-    any way for automated cleanup to revert it back either.
 
 AUTHOR
 

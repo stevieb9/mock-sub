@@ -1,5 +1,8 @@
 Revision history for Mock-Sub
 
+0.11    2015-xxxxxx
+        - calling mock() in void context now croak()s
+
 0.10    2015-12-07
         - all bugs fixed in this release reported by Joel Berger (jberger)
         - fix issue #5: we now pass in any parameters passed to the mocked

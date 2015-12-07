@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 3;
 
 use lib 't/data';
 
@@ -12,13 +12,6 @@ BEGIN {
 };
 
 {
-    Mock::Sub->mock('One::foo', side_effect => sub { die "died"; });
-    eval { One::foo; };
-    like ($@, qr/died/, "side_effect in void context works");
+    eval { Mock::Sub->mock('One::foo', side_effect => sub { die "died"; }); };
+    like ($@, qr/in void context/, "calling mock() in void context dies");
 }
-{
-    Mock::Sub->mock('One::foo', return_value => 'True');
-    my $ret = One::foo;
-    is ($ret, 'True', "return_value in void context works");
-}
-
