@@ -1,7 +1,9 @@
 Revision history for Mock-Sub
 
 0.11    2015-xxxxxx
-        - calling mock() in void context now croak()s
+        - if mock() is called in void context, we'll croak (except in the
+          instance where you're re-mocking an unmock()ed sub with the same
+          object
 
 0.10    2015-12-07
         - all bugs fixed in this release reported by Joel Berger (jberger)

@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 use lib 't/data';
 
@@ -22,12 +22,13 @@ BEGIN {
     $ret = One::foo();
     is ($ret, 'foo', "One::foo is now unmocked with unmock()");
 
+    $foo->mock('One::foo', return_value => 'Mocked');
+    $ret = One::foo();
+    is ($foo->called_count, 1, "call count is proper in obj void context");
+
+    is ($ret, 'Mocked', "One::foo is mocked after being unmocked");
     eval { $foo->mock(); };
     like ($@, qr/void context/, "re-mocking with the same object fails");
-
-    my $bar = $mock->mock('One::foo', return_value => 'Mocked');
-    $ret = One::foo();
-    is ($ret, 'Mocked', "One::foo is mocked after being unmocked");
 
     $foo->unmock;
     $ret = One::foo();
@@ -64,16 +65,4 @@ BEGIN {
     my $post_destroy_ret = One::foo();
     is ($post_destroy_ret, 'foo', "post_destroy value is $post_destroy_ret");
 
-}
-{
-    {
-        my $mock = Mock::Sub->new;
-
-        my $foo = $mock->mock('One::foo', return_value => 'mock_foo');
-        my $bar = $mock->mock('One::bar', return_value => 'mock_bar');
-
-    }
-
-#    print One::foo();
-#    print One::bar();
 }

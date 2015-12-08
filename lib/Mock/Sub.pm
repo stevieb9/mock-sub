@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
+use Scalar::Util qw(weaken);
 
 our $VERSION = '0.11';
 
@@ -12,17 +13,21 @@ sub new {
 }
 sub mock {
 
-    shift; # throw away object/class
+    my $thing = shift;
+    my $sub = shift;
+    my $self;
 
-    # die if void context
-
-    if (! defined wantarray){
-        croak "\n\ncalling mock() in void context isn't allowed.";
+    if (ref($thing) eq __PACKAGE__ && $thing->{unmocked}){
+        $self = $thing;
+        $self->{unmocked} = 0;
+    }
+    else {
+        $self = bless {}, __PACKAGE__;
+        if (! defined wantarray){
+            croak "\n\ncalling mock() in void context isn't allowed.";
+        }
     }
 
-    my $self = bless {}, __PACKAGE__;
-
-    my $sub = shift;
     %{ $self } = @_;
 
     $sub = "main::$sub" if $sub !~ /::/;
@@ -51,6 +56,9 @@ sub mock {
         no warnings 'redefine';
 
         *$sub = sub {
+
+            weaken $self;
+
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
             if ($self->{side_effect}) {
@@ -76,6 +84,8 @@ sub mock {
 sub unmock {
     my $self = shift;
     my $sub = $self->{name};
+
+    $self->{unmocked} = 1;
 
     {
         no strict 'refs';
@@ -127,8 +137,8 @@ sub _check_side_effect {
 }
 sub DESTROY {
     my $self = shift;
-    if (defined $self->{orig} && ! $self->{keep_mock_on_destroy}) {
-        $self->unmock if ! $self->{keep_mock_on_destroy};
+    if (! $self->{keep_mock_on_destroy}){
+        $self->unmock;
     }
 }
 sub _end {}; # vim fold placeholder
@@ -173,7 +183,7 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     my $foo = $mock->mock('Package::foo', return_value => 'True');
 
     # add/change/remove return_value after instantiation (note that with the
-    # return_value() method call, you can have a list returned
+    # return_value() method call, you can have a list returned)
 
     $foo->return_value(1, 2, {a => 1});
 
@@ -203,6 +213,10 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     $foo->unmock;
 
+    # re-mock a sub using the same object after unmocking (this is the only
+    # time void context is permitted)
+
+    $foo->mock('One::foo');
 
 =head1 DESCRIPTION
 
