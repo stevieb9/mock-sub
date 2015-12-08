@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 use lib 't/data';
 
@@ -14,10 +14,15 @@ BEGIN {
 {# called()
 
     my $test = Mock::Sub->mock('One::foo');
-    Two::test;
+
+    is ($test->called, 0, "called() before a call is correct");
+
     Two::test;
 
-    my $called = $test->called;
-    is ($called, 1, "count() does the right thing after one call");
+    is ($test->called, 1, "called() is 1 after one call");
+
+    Two::test;
+
+    is ($test->called, 1, "called() is still 1 after two calls");
 }
 

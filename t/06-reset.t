@@ -60,7 +60,7 @@ BEGIN {
     $foo->reset;
 
     is ($foo->called, 0, "after reset, called == 0");
-    is ($foo->called_count, undef, "after reset, called_count == 0");
+    is ($foo->called_count, 0, "after reset, called_count == 0");
 }
 {
 #    my $foo = Mock::Sub->mock('One::foo');

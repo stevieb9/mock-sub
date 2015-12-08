@@ -25,12 +25,13 @@ BEGIN {
 
     my $foo = Mock::Sub->mock('foo', return_value => 'mocked_foo');
 
+    is ($foo->name, 'main::foo', "name() adds main:: properly");
+
     my $ret1 = foo();
     my $ret2 = main::foo();
 
     is ($ret1, 'mocked_foo', 'calling a main:: mock without main:: works');
     is ($ret2, 'mocked_foo', 'calling a main:: mock with main:: works');
-    is ($foo->name, 'main::foo', "name() adds main:: properly");
 
     sub foo {
         return "mainfoo";

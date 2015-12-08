@@ -46,7 +46,7 @@ sub mock {
     $self->{name} = $sub;
     $self->{orig} = \&$sub if ! $fake;
 
-    my $called;
+    $self->{called_count} = 0;
 
     {
         no strict 'refs';
@@ -58,7 +58,7 @@ sub mock {
         *$sub = sub {
 
             @{ $closed_self->{called_with} } = @_;
-            $closed_self->{called_count} = ++$called;
+            ++$closed_self->{called_count};
 
             if ($closed_self->{side_effect}) {
                 if (wantarray){
@@ -103,7 +103,7 @@ sub called {
     return shift->called_count ? 1 : 0;
 }
 sub called_count {
-    return shift->{called_count};
+    return shift->{called_count} || 0;
 }
 sub called_with {
     my $self = shift;
