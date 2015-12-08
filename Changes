@@ -1,6 +1,8 @@
 Revision history for Mock-Sub
 
 1.02    xxxx
+        - fixed bug where if the mocked sub isn't called, the original sub
+          wasn't being restored
 
 1.01    2015-12-08
         - DESTROY() always calls unmock() now. The option to disable this has
