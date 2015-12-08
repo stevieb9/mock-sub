@@ -99,5 +99,5 @@ BEGIN {
     }
 
     my $post_ret = One::foo();
-    is ($post_ret, 'foo', "auto destroy/unmock works properly")
+    is ($post_ret, 'foo', "DESTROY() is called if the mocked sub isn't called")
 }
