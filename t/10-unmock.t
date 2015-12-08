@@ -67,6 +67,8 @@ BEGIN {
 
 }
 {
+    # test DESTROY()
+
     my $mock = Mock::Sub->new;
 
     my $ret = One::foo();
@@ -81,3 +83,4 @@ BEGIN {
     my $post_ret = One::foo();
     is ($post_ret, 'foo', "auto destroy/unmock works properly")
 }
+

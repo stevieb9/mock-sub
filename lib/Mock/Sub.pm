@@ -24,7 +24,7 @@ sub mock {
     else {
         $self = bless {}, __PACKAGE__;
         if (! defined wantarray){
-            croak "\n\ncalling mock() in void context isn't allowed.";
+            croak "\n\ncalling mock() in void context isn't allowed. ";
         }
     }
 
@@ -44,10 +44,7 @@ sub mock {
     push @{ $self->{return} }, $self->{return_value};
 
     $self->{name} = $sub;
-
-    if (! $fake) {
-        $self->{orig} = \&$sub;
-    }
+    $self->{orig} = \&$sub if ! $fake;
 
     my $called;
 
@@ -55,13 +52,13 @@ sub mock {
         no strict 'refs';
         no warnings 'redefine';
 
-
         *$sub = sub {
 
             weaken $self if ! isweak $self;
 
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
+
             if ($self->{side_effect}) {
                 if (wantarray){
                     my @effect = $self->{side_effect}->(@_);
@@ -73,7 +70,7 @@ sub mock {
                 }
             }
 
-            return undef if ! $self->{return};
+            return if ! $self->{return};
 
             return ! wantarray && @{ $self->{return} } == 1
                 ? $self->{return}[0]
@@ -137,9 +134,7 @@ sub _check_side_effect {
     }
 }
 sub DESTROY {
-    if (! $_[0]->{keep_mock_on_destroy}){
-        $_[0]->unmock;
-    }
+    $_[0]->unmock;
 }
 sub _end {}; # vim fold placeholder
 
@@ -297,12 +292,6 @@ information).
 =item C<side_effect>
 
 See C<side_effect()> method.
-
-=item C<keep_mock_on_destroy>
-
-By default, we restore original sub functionality after the mock object goes
-out of scope. You can keep the mocked sub in place by setting this parameter
-to any true value.
 
 =back
 
