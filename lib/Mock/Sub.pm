@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
-use Scalar::Util qw(weaken);
+use Scalar::Util qw(weaken isweak);
 
 our $VERSION = '0.11';
 
@@ -55,9 +55,10 @@ sub mock {
         no strict 'refs';
         no warnings 'redefine';
 
+
         *$sub = sub {
 
-            weaken $self;
+            weaken $self if ! isweak $self;
 
             @{ $self->{called_with} } = @_;
             $self->{called_count} = ++$called;
@@ -95,7 +96,7 @@ sub unmock {
             *$sub = \&{ $self->{orig} };
         }
         else {
-            undef *$sub;
+            undef *$sub if $self->{name};
         }
     }
     $self->reset;
@@ -168,36 +169,24 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     $foo->called_count; # how many times was it called?
     $foo->called_with;  # array of params sent to sub
 
-    # create a mock object to reduce typing when multiple subs
-    # are mocked
+    # create a mock object to reduce typing when multiple subs are mocked
 
     my $mock = Mock::Sub->new;
 
     my $foo = $mock->mock('Package::foo');
     my $bar = $mock->mock('Package::bar');
 
-    # have the mocked sub return something when it's called
-
-    # a single scalar only
-
-    my $foo = $mock->mock('Package::foo', return_value => 'True');
-
-    # add/change/remove return_value after instantiation (note that with the
-    # return_value() method call, you can have a list returned)
+    # have the mocked sub return something when it's called (list or scalar)
 
     $foo->return_value(1, 2, {a => 1});
-
-    my $return = Package::foo;
+    my @return = Package::foo;
 
     # have the mocked sub perform an action
 
-    my $foo = $mock->mock('Package::foo', side_effect => sub { die "eval catch"; });
+    $foo->side_effect( sub { die "eval catch"; } );
+
     eval { Package::foo; };
-    print 'died' if $@;
-
-    # add/change/remove a side-effect after instantiation
-
-    $foo->side_effect(sub { print "hello, world!; });
+    like ($@, qr/eval catch/, "side_effect worked");
 
     # extract the parameters the sub was called with (best if you know what
     # the original sub is expecting)
@@ -208,13 +197,13 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     $foo->reset;
 
-    # restore original functionality to the sub (we unmock() by default on
+    # restore original functionality to the sub (we do this by default on
     # DESTROY())
 
     $foo->unmock;
 
     # re-mock a sub using the same object after unmocking (this is the only
-    # time void context is permitted)
+    # time void context with mock() is permitted)
 
     $foo->mock('One::foo');
 
@@ -349,8 +338,8 @@ Returns the full name of the sub being mocked, as entered into C<mock()>.
 
 =head2 C<side_effect($cref)>
 
-Add (or remove) a side effect after instantiation. Same rules apply here as
-they do for the C<side_effect> parameter.
+Add (or change/remove) a side effect after instantiation. Same rules apply
+here as they do for the C<side_effect> parameter.
 
 =head2 C<return_value>
 

@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
 use Test::More tests => 12;
 
 use lib 't/data';
@@ -14,7 +15,9 @@ BEGIN {
 {
     # reset()
 
-    my $foo = Mock::Sub->mock('One::foo', return_value => 99);
+    my $mock = Mock::Sub->new;
+
+    my $foo = $mock->mock('One::foo', return_value => 99);
     my $ret1 = Two::test;
 
     is ($ret1, 99, "before reset, return_value is ok");
@@ -25,7 +28,7 @@ BEGIN {
 
     is ($ret2, undef, "after reset, return_value is reset");
 
-    $foo = Mock::Sub->mock('One::foo', side_effect => sub {return 10;});
+    $foo->side_effect( sub {return 10;} );
 
     my $ret3 = Two::test;
 

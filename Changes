@@ -1,9 +1,11 @@
 Revision history for Mock-Sub
 
-0.11    2015-xxxxxx
+0.11    2015-12-08
         - if mock() is called in void context, we'll croak (except in the
           instance where you're re-mocking an unmock()ed sub with the same
-          object
+          object)
+        - fixes bug where DESTROY() wasn't able to properly clean up prior
+          to END
 
 0.10    2015-12-07
         - all bugs fixed in this release reported by Joel Berger (jberger)

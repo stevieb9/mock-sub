@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17;
+use Test::More tests => 18;
 
 use lib 't/data';
 
@@ -29,7 +29,6 @@ BEGIN {
     is ($test->called_count, 1, "instantiating within an object works");
 }
 { 
-
     my $mock = Mock::Sub->new;
     is (ref $mock, 'Mock::Sub', "instantiating with new() works");
     
@@ -66,7 +65,9 @@ BEGIN {
     is ($warn, 'warned', "mocking a non-existent sub results in a warning");
 }
 {
-    eval { my $mock = Mock::Sub->mock('testing', return_value => 'True'); };
+    my $mock;
+    eval { $mock = Mock::Sub->mock('testing', return_value => 'True'); };
+    is ($mock->{name}, 'main::testing', "main:: gets prepended properly");
     is ($@, '', "sub param automatically gets main:: if necessary");
     is (testing(), 'True', "sub in main:: is called properly")
 }
