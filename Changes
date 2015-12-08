@@ -1,6 +1,8 @@
 Revision history for Mock-Sub
 
-1.01    2015-xxxxxx
+1.02    xxxx
+
+1.01    2015-12-08
         - DESTROY() always calls unmock() now. The option to disable this has
           been removed
 
