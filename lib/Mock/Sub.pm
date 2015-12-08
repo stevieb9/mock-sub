@@ -6,7 +6,7 @@ use warnings;
 use Carp qw(croak);
 use Scalar::Util qw(weaken isweak);
 
-our $VERSION = '0.11';
+our $VERSION = '1.01';
 
 sub new {
     return bless {}, shift;
@@ -181,7 +181,8 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     $foo->return_value(1, 2, {a => 1});
     my @return = Package::foo;
 
-    # have the mocked sub perform an action
+    # have the mocked sub perform an action (the side effect function receives
+    # the parameters sent into the mocked sub)
 
     $foo->side_effect( sub { die "eval catch"; } );
 
@@ -296,6 +297,8 @@ scalar only. See C<return_value()> method to return a list).
 
 Send in a code reference containing an action you'd like the
 mocked sub to perform (C<die()> is useful for testing with C<eval()>).
+
+The side effect function will receive all parameters sent into the mocked sub.
 
 You can use both side_effect and return_value params at the same time.
 side_effect will be run first, and then return_value. Note that if
