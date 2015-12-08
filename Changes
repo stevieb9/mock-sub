@@ -1,5 +1,9 @@
 Revision history for Mock-Sub
 
+1.01    2015-xxxxxx
+        - DESTROY() always calls unmock() now. The option to disable this has
+          been removed
+
 0.11    2015-12-08
         - if mock() is called in void context, we'll croak (except in the
           instance where you're re-mocking an unmock()ed sub with the same
