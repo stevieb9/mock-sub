@@ -179,10 +179,10 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     # have the mocked sub perform an action (the side effect function receives
     # the parameters sent into the mocked sub)
 
-    $foo->side_effect( sub { @args = @_; die "eval catch" if $args[0] == 1; } );
+    $foo->side_effect( sub { die "eval catch" if @_; } );
 
     eval { Package::foo(1); };
-    like ($@, qr/eval catch/, "side_effect worked with param");
+    like ($@, qr/eval catch/, "side_effect worked with params");
 
     # extract the parameters the sub was called with (best if you know what
     # the original sub is expecting)
