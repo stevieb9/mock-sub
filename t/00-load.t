@@ -2,9 +2,8 @@
 use 5.006;
 use strict;
 use warnings;
-use Test::More;
+use Test::More tests => 13;
 
-plan tests => 13;
 
 BEGIN {
     use_ok( 'Mock::Sub' ) || print "Bail out!\n";
