@@ -52,29 +52,30 @@ sub mock {
         no strict 'refs';
         no warnings 'redefine';
 
+        my $closed_self = $self;
+        weaken $closed_self;
+
         *$sub = sub {
 
-            weaken $self if ! isweak $self;
+            @{ $closed_self->{called_with} } = @_;
+            $closed_self->{called_count} = ++$called;
 
-            @{ $self->{called_with} } = @_;
-            $self->{called_count} = ++$called;
-
-            if ($self->{side_effect}) {
+            if ($closed_self->{side_effect}) {
                 if (wantarray){
-                    my @effect = $self->{side_effect}->(@_);
+                    my @effect = $closed_self->{side_effect}->(@_);
                     return @effect if @effect;
                 }
                 else {
-                    my $effect = $self->{side_effect}->(@_);
+                    my $effect = $closed_self->{side_effect}->(@_);
                     return $effect if defined $effect;
                 }
             }
 
-            return if ! $self->{return};
+            return if ! $closed_self->{return};
 
-            return ! wantarray && @{ $self->{return} } == 1
-                ? $self->{return}[0]
-                : @{ $self->{return} };
+            return ! wantarray && @{ $closed_self->{return} } == 1
+                ? $closed_self->{return}[0]
+                : @{ $closed_self->{return} };
         };
     }
     return $self;

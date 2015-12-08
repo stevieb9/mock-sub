@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17;
+use Test::More tests => 19;
 
 use lib 't/data';
 
@@ -83,4 +83,21 @@ BEGIN {
     my $post_ret = One::foo();
     is ($post_ret, 'foo', "auto destroy/unmock works properly")
 }
+{
+    # test DESTROY() no calls
 
+    my $mock = Mock::Sub->new;
+
+    my $ret = One::foo();
+    is ($ret, 'foo', "pre_mock value is $ret");
+
+    {
+        my $foo = $mock->mock(
+            'One::foo',
+            return_value => 'mocked',
+            );
+    }
+
+    my $post_ret = One::foo();
+    is ($post_ret, 'foo', "auto destroy/unmock works properly")
+}
