@@ -137,9 +137,8 @@ sub _check_side_effect {
     }
 }
 sub DESTROY {
-    my $self = shift;
-    if (! $self->{keep_mock_on_destroy}){
-        $self->unmock;
+    if (! $_[0]->{keep_mock_on_destroy}){
+        $_[0]->unmock;
     }
 }
 sub _end {}; # vim fold placeholder
@@ -194,12 +193,13 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
 
     my @args = $foo->called_with;
 
-    # reset the mocked sub for re-use within the same scope
+    # reset the mock object for re-use within the same scope (does not restore
+    # the mocked sub)
 
     $foo->reset;
 
     # restore original functionality to the sub (we do this by default on
-    # DESTROY())
+    # DESTROY()). This also calls reset() on the ojbect
 
     $foo->unmock;
 
@@ -273,7 +273,7 @@ MyModule::first).
 
 =head2 C<new>
 
-Instantiates and returns a new Mock::Sub object.
+Instantiates and returns a new C<Mock::Sub> object.
 
 =head2 C<mock('sub', %opts)>
 
