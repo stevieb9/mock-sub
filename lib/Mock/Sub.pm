@@ -291,23 +291,12 @@ Options:
 =item C<return_value>
 
 Set this to have the mocked sub return anything you wish (accepts a single
-scalar only. See C<return_value()> method to return a list).
+scalar only. See C<return_value()> method to return a list and for further
+information).
 
 =item C<side_effect>
 
-Send in a code reference containing an action you'd like the
-mocked sub to perform (C<die()> is useful for testing with C<eval()>).
-
-The side effect function will receive all parameters sent into the mocked sub.
-
-You can use both side_effect and return_value params at the same time.
-side_effect will be run first, and then return_value. Note that if
-side_effect's last expression evaluates to any value whatsoever (even false),
-it will return that and return_value will be skipped.
-
-To work around this and have the side_effect run but still get the
-return_value thereafter, write your cref to evaluate undef as the last thing
-it does: C<sub { ...; undef; }>.
+See C<side_effect()> method.
 
 =item C<keep_mock_on_destroy>
 
@@ -332,8 +321,8 @@ Returns the number of times the mocked sub has been called.
 
 =head2 C<called_with>
 
-Returns an array of the parameters sent to the subroutine. C<dies()> if we're
-called before the mocked sub has been called.
+Returns an array of the parameters sent to the subroutine. C<croak()s> if
+we're called before the mocked sub has been called.
 
 =head2 C<name>
 
@@ -341,8 +330,22 @@ Returns the full name of the sub being mocked, as entered into C<mock()>.
 
 =head2 C<side_effect($cref)>
 
-Add (or change/remove) a side effect after instantiation. Same rules apply
-here as they do for the C<side_effect> parameter.
+Add (or change/remove) a side effect after instantiation.
+
+Send in a code reference containing an action you'd like the
+mocked sub to perform (C<die()> is useful for testing with C<eval()>).
+
+The side effect function will receive all parameters sent into the mocked sub.
+
+You can use both C<side_effect()> and C<return_value()> params at the same
+time. C<side_effect> will be run first, and then C<return_value>. Note that if
+C<side_effect>'s last expression evaluates to any value whatsoever
+(even false), it will return that and C<return_value> will be skipped.
+
+To work around this and have the side_effect run but still get the
+return_value thereafter, write your cref to evaluate undef as the last thing
+it does: C<sub { ...; undef; }>.
+
 
 =head2 C<return_value>
 
