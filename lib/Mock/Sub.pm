@@ -6,7 +6,7 @@ use warnings;
 use Carp qw(croak);
 use Scalar::Util qw(weaken isweak);
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 sub new {
     return bless {}, shift;
