@@ -187,6 +187,10 @@ sub mocked_state {
     }
     else {
         # we're a mock
+        if (! $sub){
+            croak "can't call mocked_state() with a top-level object " .
+                  " without sending in a sub name. ";
+        }
         return $self->{mocked}{$sub}{state};
     }
 }
