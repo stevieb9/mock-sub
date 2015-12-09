@@ -200,9 +200,11 @@ sub _mocked {
         croak "_mocked() requires both a sub name and state passed in ";
     }
     if ($self->{mock} && ref($self->{mock}) ne 'SCALAR' ){
-        $self->{mock}{mocked}{$sub}{state} = $state || 0;
-        $self->{state} = $state || 0;
+        # parent mock object
         $self->{mock}{mocked}{$sub}{name} = $self->{name};
+        $self->{mock}{mocked}{$sub}{state} = $state || 0;
+        # sub mock object
+        $self->{state} = $state || 0;
     }
 }
 sub DESTROY {
