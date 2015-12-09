@@ -9,6 +9,12 @@ Revision history for Mock-Sub
           in all child objects created by mock()
         - return_value param can be send into new(), passed into all child
           objects
+        - added mocked_objects(), returns a list of objects that have mocked
+          subs (if unmocked(), obj won't be returned)
+        - added mocked_names(), same as mocked_objects() but returns the sub
+          names only
+        - mocked_state(), returns bool whether the named sub is currently
+          mocked
 
 1.01    2015-12-08
         - DESTROY() always calls unmock() now. The option to disable this has
