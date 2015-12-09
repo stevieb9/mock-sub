@@ -9,7 +9,13 @@ use Scalar::Util qw(weaken);
 our $VERSION = '1.02';
 
 sub new {
-    return bless {}, shift;
+    my $self = bless {}, shift;
+    %{ $self } = @_;
+
+    if ($self->{side_effect}){
+        $self->_check_side_effect($self->{side_effect});
+    }
+    return $self;
 }
 sub mock {
 
@@ -29,6 +35,16 @@ sub mock {
     }
 
     %{ $self } = @_;
+
+    if (ref($thing) eq __PACKAGE__){
+        if ($thing->{side_effect}){
+            $self->{side_effect} = $thing->{side_effect};
+        }
+        if (defined $thing->{return_value}){
+            $self->{return_value} = $thing->{return_value};
+        }
+        undef $thing;
+    }
 
     $sub = "main::$sub" if $sub !~ /::/;
 
@@ -52,30 +68,30 @@ sub mock {
         no strict 'refs';
         no warnings 'redefine';
 
-        my $closed_self = $self;
-        weaken $closed_self;
+        my $mock = $self;
+        weaken $mock;
 
         *$sub = sub {
 
-            @{ $closed_self->{called_with} } = @_;
-            ++$closed_self->{called_count};
+            @{ $mock->{called_with} } = @_;
+            ++$mock->{called_count};
 
-            if ($closed_self->{side_effect}) {
+            if ($mock->{side_effect}) {
                 if (wantarray){
-                    my @effect = $closed_self->{side_effect}->(@_);
+                    my @effect = $mock->{side_effect}->(@_);
                     return @effect if @effect;
                 }
                 else {
-                    my $effect = $closed_self->{side_effect}->(@_);
+                    my $effect = $mock->{side_effect}->(@_);
                     return $effect if defined $effect;
                 }
             }
 
-            return if ! $closed_self->{return};
+            return if ! $mock->{return};
 
-            return ! wantarray && @{ $closed_self->{return} } == 1
-                ? $closed_self->{return}[0]
-                : @{ $closed_self->{return} };
+            return ! wantarray && @{ $mock->{return} } == 1
+                ? $mock->{return}[0]
+                : @{ $mock->{return} };
         };
     }
     return $self;
@@ -142,7 +158,7 @@ sub _end {}; # vim fold placeholder
 1;
 =head1 NAME
 
-Mock::Sub - Mock module, package, object and standard subroutines, with unit testing in mind.
+Mock::Sub - Mock package, object and standard subroutines, with unit testing in mind.
 
 
 =head1 SYNOPSIS
@@ -171,13 +187,16 @@ Mock::Sub - Mock module, package, object and standard subroutines, with unit tes
     my $foo = $mock->mock('Package::foo');
     my $bar = $mock->mock('Package::bar');
 
-    # have the mocked sub return something when it's called (list or scalar)
+    # have the mocked sub return something when it's called (list or scalar).
+    # See new() to find out how to set a return value once and have it used in
+    # all child mocks
 
     $foo->return_value(1, 2, {a => 1});
     my @return = Package::foo;
 
     # have the mocked sub perform an action (the side effect function receives
-    # the parameters sent into the mocked sub)
+    # the parameters sent into the mocked sub). See new() to find out how to
+    # set side_effect up once, and have it copied to all child mocks
 
     $foo->side_effect( sub { die "eval catch" if @_; } );
 
@@ -267,9 +286,27 @@ MyModule::first).
 
 =head1 METHODS
 
-=head2 C<new>
+=head2 C<new(%opts)>
 
 Instantiates and returns a new C<Mock::Sub> object.
+
+Optional options:
+
+=over 4
+
+=item C<return_value>
+
+Set this to have all mocked subs created with this mock object return anything
+you wish (accepts a single scalar only. See C<return_value()> method to return
+a list and for further information). You can also set it in individual mocks
+only (see C<mock()>).
+
+=item C<side_effect>
+
+Set this in C<new()> to have the side effect passed into all child mocks
+created with this object. See C<side_effect()> method.
+
+=back
 
 =head2 C<mock('sub', %opts)>
 
@@ -280,21 +317,14 @@ name if the sub isn't in C<main::>).
 The mocked sub will return undef if a return value isn't set, or a side effect
 doesn't return anything.
 
-Options:
+Optional options:
 
-=over 4
+Both C<return_value> and C<side_effect> can be set in this method to
+individualize each mock object. Set in C<new> to have all mock objects use
+the same configuration.
 
-=item C<return_value>
-
-Set this to have the mocked sub return anything you wish (accepts a single
-scalar only. See C<return_value()> method to return a list and for further
-information).
-
-=item C<side_effect>
-
-See C<side_effect()> method.
-
-=back
+There's also C<return_value()> and C<side_effect()> methods if you want to
+set, change or remove these values after instantiation.
 
 =head2 C<unmock>
 

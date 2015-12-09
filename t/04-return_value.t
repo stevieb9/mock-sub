@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Test::More tests => 15;
+use Test::More tests => 27;
 
 use lib 't/data';
 
@@ -67,4 +67,63 @@ BEGIN {
     is ($ret, 2, "in scalar context with list sent in, count is returned");
 
 }
+{# return_value in new()
 
+    my $mock = Mock::Sub->new(return_value => 'in_new');
+
+    my $ret;
+
+    my $foo = $mock->mock('One::foo');
+    $ret = One::foo();
+    is ($ret, 'in_new', "1st object uses return_value from new()");
+
+    my $bar = $mock->mock('One::bar');
+    $ret = One::bar();
+    is ($ret, 'in_new', "1st object uses return_value from new()");
+
+    $foo->return_value(undef);
+    $ret = One::foo();
+    is ($ret, undef, "1st object return_value is undef after reset");
+
+    $ret = One::bar();
+    is (
+        $ret,
+        'in_new',
+        "2nd obj return_value remains from new() after 1st was reset"
+    );
+
+    $foo->return_value('out_of_new');
+    $ret = One::foo();
+    is ($ret, 'out_of_new', "1st object return_value obeys return_value()");
+
+    $ret = One::bar();
+    is (
+        $ret,
+        'in_new',
+        "2nd obj return_value remains after 1st changed again"
+    );
+
+    $bar->return_value(undef);
+    $ret = One::bar();
+    is ($ret, undef, "2nd object can reset return_value independently");
+
+    $ret = One::foo();
+    is ($ret, 'out_of_new', "...and 1st object is unaffected");
+
+    my $mock2 = Mock::Sub->new(return_value => 'mock2');
+
+    my $baz = $mock2->mock('One::baz');
+    $ret = One::baz();
+    is ($ret, 'mock2', "new obj with new mock sets return_value in new");
+
+    $ret = One::foo();
+    is ($ret, 'out_of_new', "...and objects created with 1st mock are ok");
+
+    $baz->return_value('mock2_call');
+    $ret = One::baz();
+    is ($ret, 'mock2_call', "obj with 2nd mock return_value() works");
+
+    $ret = One::bar();
+    is ($ret, undef, "...and objects created by first mock are unaffected");
+
+}

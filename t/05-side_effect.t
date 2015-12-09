@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Test::More tests => 19;
+use Test::More tests => 22;
 
 use lib 't/data';
 
@@ -109,3 +109,22 @@ BEGIN {
     is ($ret{a}, '1', "in list context, a hash is properly created if wanted");
     is ($ret{b}, '2', "in list context, a hash is properly created if wanted");
 }
+{ # test side_effect in new()
+
+    my $mock = Mock::Sub->new(side_effect => sub {return 'new'});
+
+    my $foo = $mock->mock('One::foo');
+    use Data::Dumper;
+
+    my $ret = One::foo();
+    is ($ret, 'new', "setting side_effect in new applies to obj 1");
+
+    my $bar = $mock->mock('One::foo');
+    $ret = One::foo();
+    is ($ret, 'new', "setting side_effect in new applies to obj 2");
+
+    my $baz = $mock->mock('One::foo');
+    $ret = One::foo();
+    is ($ret, 'new', "setting side_effect in new applies to obj 3");
+}
+

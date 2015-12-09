@@ -4,6 +4,11 @@ Revision history for Mock-Sub
         - fixed bug where if the mocked sub isn't called, the original sub
           wasn't being restored
         - called_count() now returns 0 instead of undef if there isn't a count
+        - fix issue #11: called_count wasn't being reset to 0 after reset()
+        - side_effect param can now be sent into new() which will be retained
+          in all child objects created by mock()
+        - return_value param can be send into new(), passed into all child
+          objects
 
 1.01    2015-12-08
         - DESTROY() always calls unmock() now. The option to disable this has

@@ -1,7 +1,7 @@
 NAME
 
-    Mock::Sub - Mock module, package, object and standard subroutines, with
-    unit testing in mind.
+    Mock::Sub - Mock package, object and standard subroutines, with unit
+    testing in mind.
 
 SYNOPSIS
 
@@ -29,29 +29,34 @@ SYNOPSIS
         my $foo = $mock->mock('Package::foo');
         my $bar = $mock->mock('Package::bar');
     
-        # have the mocked sub return something when it's called (list or scalar)
+        # have the mocked sub return something when it's called (list or scalar).
+        # See new() to find out how to set a return value once and have it used in
+        # all child mocks
     
         $foo->return_value(1, 2, {a => 1});
         my @return = Package::foo;
     
-        # have the mocked sub perform an action
+        # have the mocked sub perform an action (the side effect function receives
+        # the parameters sent into the mocked sub). See new() to find out how to
+        # set side_effect up once, and have it copied to all child mocks
     
-        $foo->side_effect( sub { die "eval catch"; } );
+        $foo->side_effect( sub { die "eval catch" if @_; } );
     
-        eval { Package::foo; };
-        like ($@, qr/eval catch/, "side_effect worked");
+        eval { Package::foo(1); };
+        like ($@, qr/eval catch/, "side_effect worked with params");
     
         # extract the parameters the sub was called with (best if you know what
         # the original sub is expecting)
     
         my @args = $foo->called_with;
     
-        # reset the mocked sub for re-use within the same scope
+        # reset the mock object for re-use within the same scope (does not restore
+        # the mocked sub)
     
         $foo->reset;
     
         # restore original functionality to the sub (we do this by default on
-        # DESTROY())
+        # DESTROY()). This also calls reset() on the ojbect
     
         $foo->unmock;
     
@@ -124,9 +129,23 @@ EXAMPLE
 
 METHODS
 
- new
+ new(%opts)
 
     Instantiates and returns a new Mock::Sub object.
+
+    Optional options:
+
+    return_value
+
+      Set this to have all mocked subs created with this mock object return
+      anything you wish (accepts a single scalar only. See return_value()
+      method to return a list and for further information). You can also
+      set it in individual mocks only (see mock()).
+
+    side_effect
+
+      Set this in new() to have the side effect passed into all child mocks
+      created with this object. See side_effect() method.
 
  mock('sub', %opts)
 
@@ -137,32 +156,14 @@ METHODS
     The mocked sub will return undef if a return value isn't set, or a side
     effect doesn't return anything.
 
-    Options:
+    Optional options:
 
-    return_value
+    Both return_value and side_effect can be set in this method to
+    individualize each mock object. Set in new to have all mock objects use
+    the same configuration.
 
-      Set this to have the mocked sub return anything you wish (accepts a
-      single scalar only. See return_value() method to return a list).
-
-    side_effect
-
-      Send in a code reference containing an action you'd like the mocked
-      sub to perform (die() is useful for testing with eval()).
-
-      You can use both side_effect and return_value params at the same
-      time. side_effect will be run first, and then return_value. Note that
-      if side_effect's last expression evaluates to any value whatsoever
-      (even false), it will return that and return_value will be skipped.
-
-      To work around this and have the side_effect run but still get the
-      return_value thereafter, write your cref to evaluate undef as the
-      last thing it does: sub { ...; undef; }.
-
-    keep_mock_on_destroy
-
-      By default, we restore original sub functionality after the mock
-      object goes out of scope. You can keep the mocked sub in place by
-      setting this parameter to any true value.
+    There's also return_value() and side_effect() methods if you want to
+    set, change or remove these values after instantiation.
 
  unmock
 
@@ -179,7 +180,7 @@ METHODS
 
  called_with
 
-    Returns an array of the parameters sent to the subroutine. dies() if
+    Returns an array of the parameters sent to the subroutine. croak()s if
     we're called before the mocked sub has been called.
 
  name
@@ -188,8 +189,22 @@ METHODS
 
  side_effect($cref)
 
-    Add (or change/remove) a side effect after instantiation. Same rules
-    apply here as they do for the side_effect parameter.
+    Add (or change/remove) a side effect after instantiation.
+
+    Send in a code reference containing an action you'd like the mocked sub
+    to perform (die() is useful for testing with eval()).
+
+    The side effect function will receive all parameters sent into the
+    mocked sub.
+
+    You can use both side_effect() and return_value() params at the same
+    time. side_effect will be run first, and then return_value. Note that
+    if side_effect's last expression evaluates to any value whatsoever
+    (even false), it will return that and return_value will be skipped.
+
+    To work around this and have the side_effect run but still get the
+    return_value thereafter, write your cref to evaluate undef as the last
+    thing it does: sub { ...; undef; }.
 
  return_value
 
