@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
+use Data::Dumper;
 use Scalar::Util qw(weaken);
 
 our $VERSION = '1.02';
@@ -37,6 +38,10 @@ sub mock {
     %{ $self } = @_;
 
     if (ref($thing) eq __PACKAGE__){
+
+        $self->{mock} = $thing;
+        $self->_mocked($sub, 1);
+
         if ($thing->{side_effect}){
             $self->{side_effect} = $thing->{side_effect};
         }
@@ -101,6 +106,7 @@ sub unmock {
     my $sub = $self->{name};
 
     $self->{unmocked} = 1;
+    $self->_mocked($sub, 0);
 
     {
         no strict 'refs';
@@ -113,6 +119,7 @@ sub unmock {
             undef *$sub if $self->{name};
         }
     }
+
     $self->reset;
 }
 sub called {
@@ -148,6 +155,50 @@ sub side_effect {
 sub _check_side_effect {
     if (defined $_[1] && ref $_[1] ne 'CODE') {
         croak "\n\nside_effect parameter must be a code reference. ";
+    }
+}
+sub mocked_names {
+    my $self = shift;
+
+    my @names;
+
+    for (keys %{ $self->{mocked} }) {
+        print $self->{mocked}{$_}{state};
+        if ($self->{mocked}{$_}{state}){
+            push @names, $_;
+        }
+    }
+    return @names;
+}
+sub mocked_objects {
+    my $self = shift;
+
+    my @mocked;
+    for (keys %{ $self->{mocked} }){
+        push @mocked, $self->{mocked}{$_}{object};
+    }
+    return @mocked;
+}
+sub mocked_state {
+    my ($self, $sub) = @_;
+    if ($self->{mock}){
+        # we're a child
+        return $self->{state};
+    }
+    else {
+        # we're a mock
+        return $self->{mocked}{$sub}{state};
+    }
+}
+sub _mocked {
+    my ($self, $sub, $state) = @_;
+    if (! defined $sub && (caller(2))[3] !~ /DESTROY/){
+        croak "_mocked() requires both a sub name and state passed in ";
+    }
+    if ($self->{mock} && ref($self->{mock}) ne 'SCALAR' ){
+        $self->{mock}{mocked}{$sub}{state} = $state || 0;
+        $self->{state} = $state || 0;
+        $self->{mock}{mocked}{$sub}{name} = $self->{name};
     }
 }
 sub DESTROY {
