@@ -16,4 +16,4 @@ pod2htm*.tmp
 pm_to_blib
 Test-MockSub-*
 Test-MockSub-*.tar.gz
-mock-sub.imi
+*.iml
