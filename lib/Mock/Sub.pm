@@ -46,7 +46,7 @@ sub mock {
     $child->mock($sub);
 
     # remove the REFCNT to the child, or else DESTROY won't be called
-    weaken $self->{$sub};
+    weaken $self->{objects}{$sub};
 
     return $child;
 }
