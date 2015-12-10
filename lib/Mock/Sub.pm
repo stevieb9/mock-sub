@@ -73,6 +73,18 @@ sub mocked_objects {
 }
 sub mocked_state {
     my ($self, $sub) = @_;
+
+    if (! $sub){
+        croak "calling mocked_state() on a Mock::Sub object requires a sub " .
+              "name to be passed in as its only parameter. ";
+    }
+    eval {
+        my $test = $self->{$sub}{obj}->mocked_state;
+    };
+    if ($@){
+        croak "can't call mocked_state() on the class if the sub hasn't yet " .
+              "been mocked. ";
+    }
     return $self->{$sub}{obj}->mocked_state;
 }
 sub DESTROY {
