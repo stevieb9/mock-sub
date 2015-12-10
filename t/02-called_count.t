@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 use lib 't/data';
 
@@ -13,7 +13,8 @@ BEGIN {
 
 {# called_count()
 
-    my $test = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $test = $mock->mock('One::foo');
 
     Two::test;
     is ($test->called_count, 1, "does the right thing after one call");
@@ -32,5 +33,11 @@ BEGIN {
 
     is ($test->called_count, 1, "does the right thing after reset, and one run");
 
+    $test->unmock;
+    is ($test->called_count, 0, "does the right thing after unmock");
+
+    $test->mock;
+    Two::test;
+    is ($test->called_count, 1, "does the right thing after re-mock");
 }
 

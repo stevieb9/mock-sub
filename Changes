@@ -1,6 +1,13 @@
 Revision history for Mock-Sub
 
-1.02    xxxx
+1.03    2015-12-10
+        - completely reworked distribution into two modules (parent and Child)
+        - Mock::Sub->mock() can not be called directly anymore, we have to
+          create a mock object with new(), and then run $mock->mock(sub) to
+          aquire a child object, and you work on that
+        - child mock() can now remock itself without any params
+
+1.02    2015-12-09
         - fixed bug where if the mocked sub isn't called, the original sub
           wasn't being restored
         - called_count() now returns 0 instead of undef if there isn't a count

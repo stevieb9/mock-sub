@@ -14,18 +14,20 @@ BEGIN {
 
 {# return_value
 
-    my $foo = Mock::Sub->mock('One::foo', return_value => 'True');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo', return_value => 'True');
     Two::test;
     my $ret = Two::test;
 
     is ($foo->called_count, 2, "mock obj with return_value has right call count");
     is ($ret, 'True', "mock obj with return_value has right ret val");
+
 }
 {# return_value
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
 
-    my $foo = Mock::Sub->mock('One::foo');
-    my $ret = Two::test;
-
+    my $ret = One::foo();
     is ($ret, undef, "no return_value set yet");
 
     $foo->return_value(50);
@@ -42,7 +44,8 @@ BEGIN {
 }
 {# return_value
 
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     $foo->return_value(qw(1 2 3));
     my @ret = One::foo;
 
@@ -52,7 +55,8 @@ BEGIN {
 }
 {# return_value
 
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     $foo->return_value('hello');
     my @ret = One::foo;
     my $ret = One::foo;

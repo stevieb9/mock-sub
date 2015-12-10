@@ -16,7 +16,13 @@ sub new {
     return $self;
 }
 sub mock {
-    my ($self, $sub) = @_;
+    my $self = shift;
+    my $sub = shift;
+
+    my %p = @_;
+    for (keys %p){
+        $self->{$_} = $p{$_};
+    }
 
     my $child = Mock::Sub::Child->new;
 

@@ -13,8 +13,9 @@ BEGIN {
 
 {# mock() instantiate
 
-    my $test = Mock::Sub->mock('One::foo');
-    is (ref $test, 'Mock::Sub', "instantiating with mock() works");
+    my $mock = Mock::Sub->new;
+    my $test = $mock->mock('One::foo');
+    is (ref $test, 'Mock::Sub::Child', "$mock->mock() returns a child object");
 
     Two::test;
     is ($test->called_count, 1, "instantiating with mock() can call methods");
@@ -61,13 +62,15 @@ BEGIN {
 {
     my $warn;
     $SIG{__WARN__} = sub {$warn = 'warned'};
-    my $mock = Mock::Sub->mock('X::Yes');
+    my $mock = Mock::Sub->new;
+    my $test4 = $mock->mock('X::Yes');
     is ($warn, 'warned', "mocking a non-existent sub results in a warning");
 }
 {
-    my $mock;
-    eval { $mock = Mock::Sub->mock('testing', return_value => 'True'); };
-    is ($mock->{name}, 'main::testing', "main:: gets prepended properly");
+    my $mock = Mock::Sub->new;
+    my $test5;
+    eval { $test5 = $mock->mock('testing', return_value => 'True'); };
+    is ($test5->{name}, 'main::testing', "main:: gets prepended properly");
     is ($@, '', "sub param automatically gets main:: if necessary");
     is (testing(), 'True', "sub in main:: is called properly")
 }
@@ -80,5 +83,5 @@ BEGIN {
 }
 
 sub testing {
-    print "test";
+    return 'testing';
 }

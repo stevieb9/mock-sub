@@ -20,7 +20,9 @@ sub new {
 }
 sub mock {
     my $self = shift;
-    my $sub = shift;
+    my $sub = $self->{name} || shift;
+
+    my $return = $self->{return};
 
     %{ $self } = @_;
 
@@ -35,7 +37,14 @@ sub mock {
     }
 
     $self->_check_side_effect($self->{side_effect});
-    push @{ $self->{return} }, $self->{return_value};
+
+    if (defined $self->{return_value}){
+        push @{ $self->{return} }, $return->[0] if defined $return->[0];
+        push @{ $self->{return} }, $self->{return_value};
+    }
+    else {
+        push @{ $self->{return} }, $return->[0] if defined $return->[0];
+    }
 
     $self->{name} = $sub;
     $self->{orig} = \&$sub if ! $fake;
@@ -73,6 +82,7 @@ sub mock {
         };
     }
     $self->{state} = 1;
+
     return $self;
 }
 sub unmock {
