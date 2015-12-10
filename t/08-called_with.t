@@ -12,7 +12,8 @@ BEGIN {
 };
 
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     One::foo(1, 2);
 
     my @args = $foo->called_with;
@@ -22,7 +23,8 @@ BEGIN {
     is ($args[1], 2, "passing (1, 2), second arg is correct")
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     One::foo(arg1 => 1, arg2 => 2);
 
     my %args = $foo->called_with;
@@ -32,7 +34,8 @@ BEGIN {
     is ($args{arg2}, 2, "passing arg1=>1, arg2=>2, second arg is correct")
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     One::foo('hello', {a => 1}, [qw(a b c)]);
 
     my ($scalar, $href, $aref) = $foo->called_with;
@@ -49,7 +52,8 @@ BEGIN {
     is ($aref->[2], 'c', "scalar, href, aref, href has correct data");
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     One::foo('hello', {a => 1}, [qw(a b c)]);
 
     my @args = $foo->called_with;
@@ -60,7 +64,8 @@ BEGIN {
     is (ref $args[2], 'ARRAY', "third arg is correct");
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
 
     eval { my @args = $foo->called_with; };
 
@@ -71,7 +76,8 @@ BEGIN {
     );
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     One::foo();
 
     my @args = $foo->called_with;
