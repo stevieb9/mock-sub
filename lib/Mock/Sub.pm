@@ -24,6 +24,10 @@ sub mock {
         $self->{$_} = $p{$_};
     }
 
+    if (! defined wantarray){
+        croak "\n\ncalling mock() in void context isn't allowed. ";
+    }
+
     my $child = Mock::Sub::Child->new;
 
     $child->side_effect($self->{side_effect});

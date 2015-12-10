@@ -27,6 +27,10 @@ sub mock {
         $self->{$_} = $p{$_};
     }
 
+    if (! defined wantarray){
+        croak "\n\ncalling mock() in void context isn't allowed. ";
+    }
+
     $sub = "main::$sub" if $sub !~ /::/;
 
     my $fake;
