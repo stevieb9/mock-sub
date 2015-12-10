@@ -40,7 +40,7 @@ BEGIN {
 
     is ($ret4, undef, "after reset, side_effect does nothing");
 
-    $foo = Mock::Sub->mock('One::foo');
+    $foo = $mock->mock('One::foo');
     Two::test;
     is ($foo->name, 'One::foo', "before reset, obj has sub name");
 
@@ -49,7 +49,8 @@ BEGIN {
     is ($foo->name, 'One::foo', "after reset, obj has sub name");
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
 
     Two::test; 
     Two::test; 
