@@ -46,7 +46,7 @@ sub mock {
     $child->mock($sub);
 
     # remove the REFCNT to the child, or else DESTROY won't be called
-    weaken $self->{objects}{$sub};
+    weaken $self->{objects}{$sub}{obj};
 
     return $child;
 }
@@ -78,8 +78,9 @@ sub mocked_state {
         croak "calling mocked_state() on a Mock::Sub object requires a sub " .
               "name to be passed in as its only parameter. ";
     }
+
     eval {
-        my $test = $self->{objects}{$sub}{obj}->mocked_state;
+        my $test = $self->{objects}{$sub}{obj}->mocked_state();
     };
     if ($@){
         croak "can't call mocked_state() on the class if the sub hasn't yet " .

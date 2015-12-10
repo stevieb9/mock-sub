@@ -17,6 +17,7 @@ BEGIN {
 
     my $foo = $mock->mock('One::foo');
     is ($foo->mocked_state, 1, "obj 1 has proper mock state");
+
     is ($mock->mocked_state('One::foo'), 1, "mock has proper mock state on obj 1");
 
     my $bar = $mock->mock('One::bar');
@@ -30,7 +31,11 @@ BEGIN {
     my $mock2 = Mock::Sub->new;
 
     eval { $mock2->mocked_state('One::foo'); };
-    like ($@, qr/can't call mocked_state()/, "a new mock obj can't see existing");
+    like (
+        $@,
+        qr/can't call mocked_state()/,
+        "can't call mocked_state() on parent if a child hasn't been initialized and mocked"
+    );
 
     $foo->mock();
     is ($foo->mocked_state, 1, "obj has proper mock state with 2 mocks");
