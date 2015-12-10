@@ -24,9 +24,19 @@ sub mock {
     # throw away the sub name if it's sent in and we're not called
     # by Mock::Sub::mock()
 
+    my $sub_passed_in;
+    if ($_[0] && $_[0] =~ /::/){
+        $sub_passed_in = 1;
+    }
+
     my $caller = (caller(1))[3] || '';
-    if ($caller ne 'Mock::Sub::mock' && $_[0] =~ /::/){
+
+    if ($caller ne 'Mock::Sub::mock' && $sub_passed_in){
         shift;
+        if(ref($self) eq 'Mock::Sub::Child' && ! $self->{name}){
+            croak "can't call mock() on a child object before it is already " .
+                  "initialized with the parent mock object. ";
+        }
     }
 
     my $sub = $self->name || shift;
