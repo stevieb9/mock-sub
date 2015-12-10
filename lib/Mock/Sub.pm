@@ -4,8 +4,6 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
-use Data::Dumper;
-use Devel::Peek;
 use Mock::Sub::Child;
 use Scalar::Util qw(weaken);
 
@@ -104,7 +102,15 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     use Mock::Sub;
 
-    my $foo = Mock::Sub->mock('Package::foo');
+    # create the parent mock object
+
+    my $mock = Mock::Sub->new;
+
+    # mock some subs... all of the following are children under the
+    # umbrella of the above $mock object we created
+
+    my $foo = $mock->mock('Package::foo');
+    my $bar = $mock->mock('Package::bar');
 
     # wait until the mocked sub is called
 
@@ -116,13 +122,6 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
     $foo->called;       # was the sub called?
     $foo->called_count; # how many times was it called?
     $foo->called_with;  # array of params sent to sub
-
-    # create a mock object to reduce typing when multiple subs are mocked
-
-    my $mock = Mock::Sub->new;
-
-    my $foo = $mock->mock('Package::foo');
-    my $bar = $mock->mock('Package::bar');
 
     # have the mocked sub return something when it's called (list or scalar).
     # See new() to find out how to set a return value once and have it used in
@@ -156,9 +155,10 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
     $foo->unmock;
 
     # re-mock a sub using the same object after unmocking (this is the only
-    # time void context with mock() is permitted)
+    # time void context with mock() is permitted). Note that child mocks don't
+    # take a sub parameter to mock()
 
-    $foo->mock('One::foo');
+    $foo->mock;
 
 =head1 DESCRIPTION
 
@@ -247,9 +247,9 @@ created with this object. See C<side_effect()> method.
 
 =head2 C<mock('sub', %opts)>
 
-Instantiates a new object on each call (calling in void context is not
-allowed). 'sub' is the name of the subroutine to mock (requires full package
-name if the sub isn't in C<main::>).
+Instantiates and returns a new *child* mock object on each call (calling in
+void context is not permitted). 'sub' is the name of the subroutine to mock
+(requires full package name if the sub isn't in C<main::>.
 
 The mocked sub will return undef if a return value isn't set, or a side effect
 doesn't return anything.
