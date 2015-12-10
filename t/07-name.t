@@ -12,7 +12,8 @@ BEGIN {
 };
 
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     One::foo;
     is ($foo->name, 'One::foo', "name() does the right thing");
 }
@@ -23,7 +24,8 @@ BEGIN {
     is ($pre_ret1, 'mainfoo', 'calling a main:: sub without main:: works');
     is ($pre_ret2, 'mainfoo', 'calling a main:: sub with main:: works');
 
-    my $foo = Mock::Sub->mock('foo', return_value => 'mocked_foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('foo', return_value => 'mocked_foo');
 
     is ($foo->name, 'main::foo', "name() adds main:: properly");
 
