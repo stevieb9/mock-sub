@@ -5,6 +5,7 @@ use warnings;
 
 use Carp qw(croak);
 use Data::Dumper;
+use Mock::Sub::Child;
 use Scalar::Util qw(weaken);
 
 our $VERSION = '1.02';
@@ -12,159 +13,28 @@ our $VERSION = '1.02';
 sub new {
     my $self = bless {}, shift;
     %{ $self } = @_;
-
-    if ($self->{side_effect}){
-        $self->_check_side_effect($self->{side_effect});
-    }
     return $self;
 }
 sub mock {
+    my ($self, $sub) = @_;
 
-    my $thing = shift;
-    my $sub = shift;
-    my $self;
+    my $child = Mock::Sub::Child->new;
 
-    if (ref($thing) eq __PACKAGE__ && $thing->{unmocked}){
-        $self = $thing;
-        $self->{unmocked} = 0;
-    }
-    else {
-        $self = bless {}, __PACKAGE__;
-        if (! defined wantarray){
-            croak "\n\ncalling mock() in void context isn't allowed. ";
-        }
-    }
+    $child->side_effect($self->{side_effect});
+    $child->return_value($self->{return_value});
 
-    %{ $self } = @_;
+    $self->{$sub}{obj} = $child;
+    $child->mock($sub);
 
-    if (ref($thing) eq __PACKAGE__){
-
-        $self->{mock} = $thing;
-        $self->_mocked($sub, 1);
-
-        if ($thing->{side_effect}){
-            $self->{side_effect} = $thing->{side_effect};
-        }
-        if (defined $thing->{return_value}){
-            $self->{return_value} = $thing->{return_value};
-        }
-        undef $thing;
-    }
-
-    $sub = "main::$sub" if $sub !~ /::/;
-
-    my $fake;
-
-    if (! exists &$sub){
-        $fake = 1;
-        warn "\n\nWARNING!: we've mocked a non-existent subroutine. " .
-             "the specified sub does not exist.\n\n";
-    }
-
-    $self->_check_side_effect($self->{side_effect});
-    push @{ $self->{return} }, $self->{return_value};
-
-    $self->{name} = $sub;
-    $self->{orig} = \&$sub if ! $fake;
-
-    $self->{called_count} = 0;
-
-    {
-        no strict 'refs';
-        no warnings 'redefine';
-
-        my $mock = $self;
-        weaken $mock;
-
-        *$sub = sub {
-
-            @{ $mock->{called_with} } = @_;
-            ++$mock->{called_count};
-
-            if ($mock->{side_effect}) {
-                if (wantarray){
-                    my @effect = $mock->{side_effect}->(@_);
-                    return @effect if @effect;
-                }
-                else {
-                    my $effect = $mock->{side_effect}->(@_);
-                    return $effect if defined $effect;
-                }
-            }
-
-            return if ! $mock->{return};
-
-            return ! wantarray && @{ $mock->{return} } == 1
-                ? $mock->{return}[0]
-                : @{ $mock->{return} };
-        };
-    }
-    return $self;
+    return $child;
 }
-sub unmock {
-    my $self = shift;
-    my $sub = $self->{name};
-
-    $self->{unmocked} = 1;
-    $self->_mocked($sub, 0);
-
-    {
-        no strict 'refs';
-        no warnings 'redefine';
-
-        if (defined $self->{orig}) {
-            *$sub = \&{ $self->{orig} };
-        }
-        else {
-            undef *$sub if $self->{name};
-        }
-    }
-
-    $self->reset;
-}
-sub called {
-    return shift->called_count ? 1 : 0;
-}
-sub called_count {
-    return shift->{called_count} || 0;
-}
-sub called_with {
-    my $self = shift;
-    if (! $self->called){
-        croak "\n\ncan't call called_with() before the mocked sub has " .
-            "been called. ";
-    }
-    return @{ $self->{called_with} };
-}
-sub name {
-    return shift->{name};  
-}
-sub reset {
-    for (qw(side_effect return_value return called called_count called_with)){
-        delete $_[0]->{$_};
-    }
-}
-sub return_value {
-    my $self = shift;
-    @{ $self->{return} } = @_;
-}
-sub side_effect {
-    $_[0]->_check_side_effect($_[1]);
-    $_[0]->{side_effect} = $_[1];
-}
-sub _check_side_effect {
-    if (defined $_[1] && ref $_[1] ne 'CODE') {
-        croak "\n\nside_effect parameter must be a code reference. ";
-    }
-}
-sub mocked_names {
+sub mocked_subs {
     my $self = shift;
 
     my @names;
 
     for (keys %{ $self->{mocked} }) {
-        print $self->{mocked}{$_}{state};
-        if ($self->{mocked}{$_}{state}){
+        if ($self->mocked_state($_)){
             push @names, $_;
         }
     }
@@ -194,23 +64,9 @@ sub mocked_state {
         return $self->{mocked}{$sub}{state};
     }
 }
-sub _mocked {
-    my ($self, $sub, $state) = @_;
-    if (! defined $sub && (caller(2))[3] !~ /DESTROY/){
-        croak "_mocked() requires both a sub name and state passed in ";
-    }
-    if ($self->{mock} && ref($self->{mock}) ne 'SCALAR' ){
-        # parent mock object
-        $self->{mock}{mocked}{$sub}{name} = $self->{name};
-        $self->{mock}{mocked}{$sub}{state} = $state || 0;
-        # sub mock object
-        $self->{state} = $state || 0;
-    }
-}
 sub DESTROY {
-    $_[0]->unmock;
 }
-sub _end {}; # vim fold placeholder
+sub __end {}; # vim fold placeholder
 
 1;
 =head1 NAME
