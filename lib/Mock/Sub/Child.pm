@@ -20,6 +20,15 @@ sub new {
 }
 sub mock {
     my $self = shift;
+
+    # throw away the sub name if it's sent in and we're not called
+    # by Mock::Sub::mock()
+
+    my $caller = (caller(1))[3] || '';
+    if ($caller ne 'Mock::Sub::mock' && $_[0] =~ /::/){
+        shift;
+    }
+
     my $sub = $self->name || shift;
 
     my %p = @_;

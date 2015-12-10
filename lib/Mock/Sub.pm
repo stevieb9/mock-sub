@@ -42,11 +42,11 @@ sub mock {
     $child->side_effect($effect);
     $child->return_value($return);
 
-    $self->{$sub}{obj} = $child;
+    $self->{objects}{$sub}{obj} = $child;
     $child->mock($sub);
 
     # remove the REFCNT to the child, or else DESTROY won't be called
-    weaken $self->{$sub}{obj};
+    weaken $self->{$sub};
 
     return $child;
 }
@@ -55,7 +55,7 @@ sub mocked_subs {
 
     my @names;
 
-    for (keys %{ $self->{mocked} }) {
+    for (keys %{ $self->{objects} }) {
         if ($self->mocked_state($_)){
             push @names, $_;
         }
@@ -79,13 +79,13 @@ sub mocked_state {
               "name to be passed in as its only parameter. ";
     }
     eval {
-        my $test = $self->{$sub}{obj}->mocked_state;
+        my $test = $self->{objects}{$sub}{obj}->mocked_state;
     };
     if ($@){
         croak "can't call mocked_state() on the class if the sub hasn't yet " .
               "been mocked. ";
     }
-    return $self->{$sub}{obj}->mocked_state;
+    return $self->{objects}{$sub}{obj}->mocked_state;
 }
 sub DESTROY {
 }
