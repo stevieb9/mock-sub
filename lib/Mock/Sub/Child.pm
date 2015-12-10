@@ -22,9 +22,10 @@ sub mock {
     my $self = shift;
     my $sub = $self->{name} || shift;
 
-    my $return = $self->{return};
-
-    %{ $self } = @_;
+    my %p = @_;
+    for (keys %p){
+        $self->{$_} = $p{$_};
+    }
 
     $sub = "main::$sub" if $sub !~ /::/;
 
@@ -39,11 +40,7 @@ sub mock {
     $self->_check_side_effect($self->{side_effect});
 
     if (defined $self->{return_value}){
-        push @{ $self->{return} }, $return->[0] if defined $return->[0];
         push @{ $self->{return} }, $self->{return_value};
-    }
-    else {
-        push @{ $self->{return} }, $return->[0] if defined $return->[0];
     }
 
     $self->{name} = $sub;

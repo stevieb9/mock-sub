@@ -15,14 +15,16 @@ BEGIN {
 {# side_effect
     
     my $cref = sub {die "throwing error";};
-    my $mock = Mock::Sub->mock('One::foo', side_effect => $cref);
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo', side_effect => $cref);
     eval{Two::test;};
     like ($@, qr/throwing error/, "side_effect with a cref works");
 }
 {# side_effect
 
     my $href = {};
-    eval {my $mock = Mock::Sub->mock('One::foo', side_effect => $href);};
+    my $mock = Mock::Sub->new;
+    eval {my $test = $mock->mock('One::foo', side_effect => $href);};
     like ($@, qr/side_effect param/, "mock() dies if side_effect isn't a cref");
 }
 {
@@ -31,13 +33,15 @@ BEGIN {
 }
 {
     my $cref = sub {50};
-    my $foo = Mock::Sub->mock('One::foo', side_effect => $cref);
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo', side_effect => $cref);
     my $ret = Two::test;
     is ($ret, 50, "side_effect properly returns a value if die() isn't called")
 }
 {
     my $cref = sub {'False'};
-    my $foo = Mock::Sub->mock(
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock(
         'One::foo',
         side_effect => $cref,
         return_value => 'True');
@@ -46,7 +50,8 @@ BEGIN {
 }
 {
     my $cref = sub {undef};
-    my $foo = Mock::Sub->mock(
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock(
         'One::foo',
         side_effect => $cref,
         return_value => 'True');
@@ -54,7 +59,8 @@ BEGIN {
     is ($ret, 'True', "side_effect with no value, return_value returns");
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
     my $ret = Two::test;
 
     is ($ret, undef, "no side effect set yet");
@@ -67,7 +73,8 @@ BEGIN {
 
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
 
     eval { $foo->side_effect(10); };
 
@@ -77,7 +84,8 @@ BEGIN {
 
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
 
     my $cref = sub {
         return \@_;
@@ -93,7 +101,8 @@ BEGIN {
     is ($ret->[2]{3}, 'a', 'side_effect args work properly')
 }
 {
-    my $foo = Mock::Sub->mock('One::foo');
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
 
     $foo->side_effect(sub { return (1, 2, 3); } );
 
