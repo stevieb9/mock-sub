@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;
+use Test::More tests => 19;
 
 use lib 't/data';
 
@@ -80,6 +80,10 @@ BEGIN {
     my $fake = $mock->mock('X::y', return_value => 'true');
     my $ret = X::y();
     is ($ret, 'true', "successfully mocked a non-existent sub")
+}
+{
+    eval { my $foo = Mock::Sub->mock('One::foo'); };
+    like ($@, qr/no longer permitted/, "can't call mock() from the Mock::Sub class");
 }
 
 sub testing {

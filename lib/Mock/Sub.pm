@@ -20,6 +20,12 @@ sub mock {
     my $self = shift;
     my $sub = shift;
 
+    if (ref($self) ne 'Mock::Sub'){
+        croak
+            "calling mock() on the Mock::Sub class is no longer permitted. " .
+            "create a new mock object with Mock::Sub->new;, then call mock " .
+            "with my \$sub_object = \$mock->mock('sub_name'); ";
+    }
     my %p = @_;
     for (keys %p){
         $self->{$_} = $p{$_};
@@ -67,18 +73,7 @@ sub mocked_objects {
 }
 sub mocked_state {
     my ($self, $sub) = @_;
-    if ($self->{mock}){
-        # we're a child
-        return $self->{state};
-    }
-    else {
-        # we're a mock
-        if (! $sub){
-            croak "can't call mocked_state() with a top-level object " .
-                  " without sending in a sub name. ";
-        }
-        return $self->{mocked}{$sub}{state};
-    }
+    return $self->{$sub}{obj}->mocked_state;
 }
 sub DESTROY {
 }

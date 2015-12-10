@@ -136,6 +136,9 @@ sub _check_side_effect {
         croak "\n\nside_effect parameter must be a code reference. ";
     }
 }
+sub mocked_state {
+    return shift->{state};
+}
 sub DESTROY {
     $_[0]->unmock;
 }

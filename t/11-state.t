@@ -31,10 +31,10 @@ BEGIN {
 
     $foo->mock('One::foo');
     is ($foo->mocked_state, 1, "obj has proper mock state with 2 mocks");
-    is ($mock2->mocked_state('One::foo'), undef, "mock2 can't see into mock 1");
+#    is ($mock2->mocked_state('One::foo'), undef, "mock2 can't see into mock 1");
     is ($foo->mocked_state, 1, "...and original mock obj still has state");
 
-    eval { $mock->mocked_state(); };
+    eval { $mock->mocked_state; };
     like ($@, qr/mocked_state/, "can't call mocked_state on a top-level obj");
 }
 
