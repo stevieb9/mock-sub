@@ -7,7 +7,7 @@ use Carp qw(croak);
 use Data::Dumper;
 use Scalar::Util qw(weaken);
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 sub new {
     my $self = bless {}, shift;
@@ -20,15 +20,11 @@ sub new {
 }
 sub mock {
     my $self = shift;
-    my $sub = $self->{name} || shift;
+    my $sub = $self->name || shift;
 
     my %p = @_;
     for (keys %p){
         $self->{$_} = $p{$_};
-    }
-
-    if (! defined wantarray){
-        croak "\n\ncalling mock() in void context isn't allowed. ";
     }
 
     $sub = "main::$sub" if $sub !~ /::/;

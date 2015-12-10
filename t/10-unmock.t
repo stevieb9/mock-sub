@@ -22,15 +22,14 @@ BEGIN {
     $ret = One::foo();
     is ($ret, 'foo', "One::foo is now unmocked with unmock()");
 
-    $foo->mock('One::foo', return_value => 'Mocked');
+    $foo->mock(return_value => 'Mocked');
     $ret = One::foo();
     is ($foo->called_count, 1, "call count is proper in obj void context");
-
     is ($ret, 'Mocked', "One::foo is mocked after being unmocked");
-    eval { $foo->mock(); };
-    like ($@, qr/void context/, "re-mocking with the same object fails");
+    is ($ret, 'Mocked', "mock() with a child object in void is remocked");
 
     $foo->unmock;
+
     $ret = One::foo();
     is ($ret, 'foo', "One::foo is now unmocked again");
 }

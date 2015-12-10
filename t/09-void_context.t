@@ -24,5 +24,5 @@ BEGIN {
 {
     my $child = Mock::Sub::Child->new;
     eval { $child->mock('One::foo', side_effect => sub { die "died"; }); };
-    like ($@, qr/in void context/, "child calling mock() in void context dies");
+    is ($@, '', "child  mock() is allowed in void context");
 }

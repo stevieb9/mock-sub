@@ -5,10 +5,11 @@ use warnings;
 
 use Carp qw(croak);
 use Data::Dumper;
+use Devel::Peek;
 use Mock::Sub::Child;
 use Scalar::Util qw(weaken);
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 sub new {
     my $self = bless {}, shift;
@@ -30,11 +31,16 @@ sub mock {
 
     my $child = Mock::Sub::Child->new;
 
-    $child->side_effect($self->{side_effect});
-    $child->return_value($self->{return_value});
+    my $effect = $self->{side_effect};
+    my $return = $self->{return_value};
+    $child->side_effect($effect);
+    $child->return_value($return);
 
     $self->{$sub}{obj} = $child;
     $child->mock($sub);
+
+    # remove the REFCNT to the child, or else DESTROY won't be called
+    weaken $self->{$sub}{obj};
 
     return $child;
 }
