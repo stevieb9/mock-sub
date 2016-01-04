@@ -133,16 +133,69 @@ EXAMPLE
         test(2);
         is ($second->called, 1, "2nd if() statement covered");
 
-METHODS
+MOCK OBJECT METHODS
+
+ new(%opts)
+
+    Instantiates and returns a new Mock::Sub object, ready to be used to
+    start cteating mocked sub objects.
+
+    Optional options:
+
+    return_value
+
+      Set this to have all mocked subs created with this mock object return
+      anything you wish (accepts a single scalar only. See return_value()
+      method to return a list and for further information). You can also
+      set it in individual mocks only (see mock()).
+
+    side_effect
+
+      Set this in new() to have the side effect passed into all child mocks
+      created with this object. See side_effect() method.
+
+ mock('sub', %opts)
+
+    Instantiates and returns a new mock object on each call (calling in
+    void context is not permitted). 'sub' is the name of the subroutine to
+    mock (requires full package name if the sub isn't in main::.
+
+    The mocked sub will return undef if a return value isn't set, or a side
+    effect doesn't return anything.
+
+    Optional options:
+
+    Both return_value and side_effect can be set in this method to
+    individualize each mock object. Set in new to have all mock objects use
+    the same configuration.
+
+    There's also return_value() and side_effect() methods if you want to
+    set, change or remove these values after instantiation.
+
+ mocked_subs
+
+    Returns a list of all subs that are currently mocked under the parent
+    mock object.
+
+ mocked_objects
+
+    Returns a list of all sub objects underneath the parent mock object,
+    regardless if its sub is currently mocked or not.
+
+ mocked_state('Sub::Name')
+
+    Returns whether a sub currently under the parent mock object is mocked
+    or not. Croaks if there is no object with the sub name parameter.
+
+SUB OBJECT METHODS
 
     These methods are for the children mocked sub objects returned from the
-    parent mock object. See "PARENT MOCK OBJECT METHODS" for methods
-    related to the parent mock object.
+    parent mock object. See "MOCK OBJECT METHODS" for methods related to
+    the parent mock object.
 
  mock
 
-    Re-mocks the sub the sub object references after unmocking. Call in
-    void context.
+    Re-mocks the sub within the object after calling unmock on it.
 
  unmock
 
@@ -200,63 +253,6 @@ METHODS
 
     Resets the functional parameters (return_value, side_effect), along
     with called() and called_count() back to undef/false.
-
-PARENT MOCK OBJECT METHODS
-
-    These methods are for Mock::Sub and the parent mock objects created
-    with it.
-
- new(%opts)
-
-    Instantiates and returns a new Mock::Sub object.
-
-    Optional options:
-
-    return_value
-
-      Set this to have all mocked subs created with this mock object return
-      anything you wish (accepts a single scalar only. See return_value()
-      method to return a list and for further information). You can also
-      set it in individual mocks only (see mock()).
-
-    side_effect
-
-      Set this in new() to have the side effect passed into all child mocks
-      created with this object. See side_effect() method.
-
- mock('sub', %opts)
-
-    Instantiates and returns a new *child* mock object on each call
-    (calling in void context is not permitted). 'sub' is the name of the
-    subroutine to mock (requires full package name if the sub isn't in
-    main::.
-
-    The mocked sub will return undef if a return value isn't set, or a side
-    effect doesn't return anything.
-
-    Optional options:
-
-    Both return_value and side_effect can be set in this method to
-    individualize each mock object. Set in new to have all mock objects use
-    the same configuration.
-
-    There's also return_value() and side_effect() methods if you want to
-    set, change or remove these values after instantiation.
-
- mocked_subs
-
-    Returns a list of all subs that are currently mocked under the parent
-    mock object.
-
- mocked_objects
-
-    Returns a list of all sub objects underneath the parent mock object,
-    regardless if its sub is currently mocked or not.
-
- mocked_state('Sub::Name')
-
-    Returns whether a sub currently under the parent mock object is mocked
-    or not. Croaks if there is no object with the sub name parameter.
 
 NOTES
 
