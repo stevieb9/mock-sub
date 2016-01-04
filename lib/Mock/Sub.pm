@@ -160,6 +160,10 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     $foo->mock;
 
+    # check if a sub is mocked
+
+    my $state = $foo->state;
+
 =head1 DESCRIPTION
 
 Easy to use and very lightweight module for mocking out sub calls.
@@ -223,45 +227,14 @@ MyModule::first).
 
 =head1 METHODS
 
-=head2 C<new(%opts)>
+These methods are for the children mocked sub objects returned from the
+parent mock object. See L<PARENT MOCK OBJECT METHODS> for methods related
+to the parent mock object.
 
-Instantiates and returns a new C<Mock::Sub> object.
+=head2 C<mock>
 
-Optional options:
-
-=over 4
-
-=item C<return_value>
-
-Set this to have all mocked subs created with this mock object return anything
-you wish (accepts a single scalar only. See C<return_value()> method to return
-a list and for further information). You can also set it in individual mocks
-only (see C<mock()>).
-
-=item C<side_effect>
-
-Set this in C<new()> to have the side effect passed into all child mocks
-created with this object. See C<side_effect()> method.
-
-=back
-
-=head2 C<mock('sub', %opts)>
-
-Instantiates and returns a new *child* mock object on each call (calling in
-void context is not permitted). 'sub' is the name of the subroutine to mock
-(requires full package name if the sub isn't in C<main::>.
-
-The mocked sub will return undef if a return value isn't set, or a side effect
-doesn't return anything.
-
-Optional options:
-
-Both C<return_value> and C<side_effect> can be set in this method to
-individualize each mock object. Set in C<new> to have all mock objects use
-the same configuration.
-
-There's also C<return_value()> and C<side_effect()> methods if you want to
-set, change or remove these values after instantiation.
+Re-mocks the sub the sub object references after unmocking. Call in void
+context.
 
 =head2 C<unmock>
 
@@ -303,7 +276,6 @@ To work around this and have the side_effect run but still get the
 return_value thereafter, write your cref to evaluate undef as the last thing
 it does: C<sub { ...; undef; }>.
 
-
 =head2 C<return_value>
 
 Add (or change, delete) the mocked sub's return value after instantiation.
@@ -314,7 +286,74 @@ Can be a scalar or list. Send in C<undef> to remove a previously set value.
 Resets the functional parameters (C<return_value>, C<side_effect>), along
 with C<called()> and C<called_count()> back to undef/false.
 
+=head1 PARENT MOCK OBJECT METHODS
+
+These methods are for C<Mock::Sub> and the parent mock objects created with it.
+
+=head2 C<new(%opts)>
+
+Instantiates and returns a new C<Mock::Sub> object.
+
+Optional options:
+
+=over 4
+
+=item C<return_value>
+
+Set this to have all mocked subs created with this mock object return anything
+you wish (accepts a single scalar only. See C<return_value()> method to return
+a list and for further information). You can also set it in individual mocks
+only (see C<mock()>).
+
+=item C<side_effect>
+
+Set this in C<new()> to have the side effect passed into all child mocks
+created with this object. See C<side_effect()> method.
+
+=back
+
+=head2 C<mock('sub', %opts)>
+
+Instantiates and returns a new *child* mock object on each call (calling in
+void context is not permitted). 'sub' is the name of the subroutine to mock
+(requires full package name if the sub isn't in C<main::>.
+
+The mocked sub will return undef if a return value isn't set, or a side effect
+doesn't return anything.
+
+Optional options:
+
+Both C<return_value> and C<side_effect> can be set in this method to
+individualize each mock object. Set in C<new> to have all mock objects use
+the same configuration.
+
+There's also C<return_value()> and C<side_effect()> methods if you want to
+set, change or remove these values after instantiation.
+
+=head2 mocked_subs
+
+Returns a list of all subs that are currently mocked under the parent mock
+object.
+
+=head2 mocked_objects
+
+Returns a list of all sub objects underneath the parent mock object, regardless
+if its sub is currently mocked or not.
+
+=head2 mocked_state('Sub::Name')
+
+Returns whether a sub currently under the parent mock object is mocked or not.
+Croaks if there is no object with the sub name parameter.
+
 =head1 NOTES
+
+This module has a backwards parent-child relationship. To use, you create a
+mock object using L<PARENT MOCK OBJECT METHODS> C<new> and C<mock> methods,
+thereafter, you use the returned mocked sub object L<METHODS> to perform the
+work.
+
+The parent mock object retains certain information and statistics of the child
+mocked objects (and the subs themselves).
 
 I didn't make this a C<Test::> module (although it started that way) because
 I can see more uses than placing it into that category.
