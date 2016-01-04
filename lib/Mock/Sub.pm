@@ -381,6 +381,8 @@ Travis-CI: L<https://travis-ci.org/stevieb9/mock-sub>
 
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=Mock-Sub>
 
+Coverage: L<https://coveralls.io/github/stevieb9/mock-sub>
+
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
