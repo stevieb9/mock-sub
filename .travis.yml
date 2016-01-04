@@ -14,6 +14,7 @@ os:
 before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
+  - eval $(curl https://travis-perl.github.io/init) --auto
   - build-perl
   - perl -V
   - build-dist
@@ -27,5 +28,7 @@ script:
   - perl Makefile.PL          # or Build.PL if it exists
   - make                      # or ./Build
   - make test
-after_success:
-  - coverage-report
+matrix:
+  include:
+    - perl: 5.20
+      env: COVERAGE=1
