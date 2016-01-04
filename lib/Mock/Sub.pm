@@ -254,6 +254,11 @@ Returns the number of times the mocked sub has been called.
 Returns an array of the parameters sent to the subroutine. C<croak()s> if
 we're called before the mocked sub has been called.
 
+=head2 C<mocked_state>
+
+Returns true if the sub the object refers to is currently mocked, and false if
+not.
+
 =head2 C<name>
 
 Returns the full name of the sub being mocked, as entered into C<mock()>.
