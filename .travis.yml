@@ -11,24 +11,32 @@ perl:
 
 os:
     - linux
+
 before_install:
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
-  - eval $(curl https://travis-perl.github.io/init) --auto
   - build-perl
   - perl -V
   - build-dist
   - cd $BUILD_DIR             # $BUILD_DIR is set by the build-dist command
+
 install:
+  - cpan-install Devel::Cover
   - cpan-install --deps       # installs prereqs, including recommends
-  - cpan-install --coverage   # installs coverage prereqs, if enabled
+  - cpan-install --coverage   # installs converage prereqs, if enabled
+
 before_script:
   - coverage-setup
+
 script:
-  - perl Makefile.PL          # or Build.PL if it exists
-  - make                      # or ./Build
-  - make test
+  - PERL5OPT=-MDevel::Cover=-coverage,statement,branch,condition,path,subroutine prove -lrv t
+  - cover
+
+after_success:
+  - cover -report coveralls
+  - coverage-report
+
 matrix:
   include:
-    - perl: '5.20'
+    - perl: 5.20
       env: COVERAGE=1
