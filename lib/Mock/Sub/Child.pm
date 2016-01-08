@@ -45,11 +45,24 @@ sub mock {
         $self->{$_} = $p{$_};
     }
 
-    $sub = "main::$sub" if $sub !~ /::/;
+    if ($sub !~ /::/) {
+        my $core_sub = "CORE::" . $sub;
+
+        if (defined &$core_sub && ${^GLOBAL_PHASE} eq 'START') {
+            warn "WARNING! we're attempting to override a global core " .
+                 "function. You will NOT be able to restore functionality " .
+                 "to this function.";
+
+            $sub = "CORE::GLOBAL::" . $sub;
+        }
+        else {
+            $sub = "main::$sub" if $sub !~ /::/;
+        }
+    }
 
     my $fake;
 
-    if (! exists &$sub){
+    if (! exists &$sub && $sub !~ /CORE::GLOBAL/){
         $fake = 1;
         warn "\n\nWARNING!: we've mocked a non-existent subroutine. " .
              "the specified sub does not exist.\n\n";
@@ -108,7 +121,7 @@ sub unmock {
         no strict 'refs';
         no warnings 'redefine';
 
-        if (defined $self->{orig}) {
+        if (defined $self->{orig} && $sub !~ /CORE::GLOBAL/) {
             *$sub = \&{ $self->{orig} };
         }
         else {

@@ -2,6 +2,8 @@ Revision history for Mock-Sub
 
 1.03    2015-12-10
         - completely reworked distribution into two modules (parent and Child)
+        - we now have the ability to mock out CORE::GLOBAL functions
+          (eg: caller()). You MUST do the mock within a BEGIN block
 
 1.02    2015-12-09
         - fixed bug where if the mocked sub isn't called, the original sub

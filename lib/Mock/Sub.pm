@@ -35,10 +35,8 @@ sub mock {
 
     my $child = Mock::Sub::Child->new;
 
-    my $effect = $self->{side_effect};
-    my $return = $self->{return_value};
-    $child->side_effect($effect);
-    $child->return_value($return);
+    $child->side_effect($self->{side_effect});
+    $child->return_value($self->{return_value});
 
     $self->{objects}{$sub}{obj} = $child;
     $child->mock($sub);
