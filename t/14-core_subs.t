@@ -24,9 +24,10 @@ BEGIN {
 
 is ($caller->mocked_state, 1, "caller() has a mock object");
 
-# for a yet unknown reason, v5.14 and lower don't take the CORE::GLOBAL name
+# below is because CALLER::CORE doesn't show up in 5.14 and below
+#FIXME
 
-is ($caller->name, "CORE::GLOBAL::caller" || "main::caller" , "caller() sub name is correct");
+ok ($caller->name eq "CORE::GLOBAL::caller" || $caller->name eq "main::caller" , "caller() sub name is correct");
 
 caller();
 
