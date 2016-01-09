@@ -162,6 +162,21 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     my $state = $foo->state;
 
+    # mock out a CORE:: function. Be warned that this *must* be done within
+    # compile stage (BEGIN), and the function can NOT be unmocked prior
+    # to the completion of program execution
+
+    my ($mock, $caller);
+
+    BEGIN {
+        $mock = Mock::Sub->new;
+        # core function caller() is now mocked permanently after the following line
+        $caller = $mock->mock('caller');
+    };
+
+    $caller->return_value(55);
+    caller(); # mocked caller() called
+
 =head1 DESCRIPTION
 
 Easy to use and very lightweight module for mocking out sub calls.
@@ -345,8 +360,6 @@ Can be a scalar or list. Send in C<undef> to remove a previously set value.
 Resets the functional parameters (C<return_value>, C<side_effect>), along
 with C<called()> and C<called_count()> back to undef/false.
 
-
-
 =head1 NOTES
 
 This module has a backwards parent-child relationship. To use, you create a
@@ -356,6 +369,11 @@ work.
 
 The parent mock object retains certain information and statistics of the child
 mocked objects (and the subs themselves).
+
+To mock CORE::GLOBAL functions, you *must* initiate within a C<BEGIN> block
+(see C<SYNOPSIS> for details). It is important that if you mock a CORE sub,
+it can't and won't be returned to its original state until after the entire
+program process tree exists. Period.
 
 I didn't make this a C<Test::> module (although it started that way) because
 I can see more uses than placing it into that category.

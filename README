@@ -70,6 +70,21 @@ SYNOPSIS
         # check if a sub is mocked
     
         my $state = $foo->state;
+    
+        # mock out a CORE:: function. Be warned that this *must* be done within
+        # compile stage (BEGIN), and the function can NOT be unmocked prior
+        # to the completion of program execution
+    
+        my ($mock, $caller);
+    
+        BEGIN {
+            $mock = Mock::Sub->new;
+            # core function caller() is now mocked permanently after the following line
+            $caller = $mock->mock('caller');
+        };
+    
+        $caller->return_value(55);
+        caller(); # mocked caller() called
 
 DESCRIPTION
 
@@ -263,6 +278,11 @@ NOTES
 
     The parent mock object retains certain information and statistics of
     the child mocked objects (and the subs themselves).
+
+    To mock CORE::GLOBAL functions, you *must* initiate within a BEGIN
+    block (see SYNOPSIS for details). It is important that if you mock a
+    CORE sub, it can't and won't be returned to its original state until
+    after the entire program process tree exists. Period.
 
     I didn't make this a Test:: module (although it started that way)
     because I can see more uses than placing it into that category.
