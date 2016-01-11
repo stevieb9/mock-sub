@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Test::More tests => 7;
+use Test::More tests => 11;
 
 use lib 't/data';
 
@@ -19,24 +19,20 @@ BEGIN {
     my $bar = $mock->mock('One::bar');
     my $baz = $mock->mock('One::baz');
 
-    my @names;
+    my @objects = $mock->mocked_objects;
 
-    @names = $mock->mocked_subs;
-
-    is (@names, 3, "return is correct");
+    is (@objects, 3, 'returns correct number of objects');
 
     $foo->unmock;
 
-    @names = $mock->mocked_subs;
-    is (@names, 2, "after unmock, return is correct");
-    my @ret1 =  grep /One::foo/, @names;
-    is ($ret1[0], undef, "the unmocked sub isn't in the list of names");
+    is ($foo->mocked_state, 0, "unmocked sub");
 
-    $foo->mock('One::foo');
+    is ($mock->mocked_objects, 3, "after an unmock, return is still correct");
 
-    @names = $mock->mocked_subs;
+    $foo->mock;
 
-    my @ret2 =  grep /One::foo/, @names;
-    is (@names, 3, "after re-mock, return is correct");
-    is ($ret2[0], 'One::foo', "the unmocked sub isn't in the list of names");
+    for my $obj (@objects){
+        is ($obj->mocked_state, 1, "objects can call state");
+        like ($obj->name, qr/(?:One::foo|One::bar|One::baz)/, "name is correct on all objects");
+    }
 }

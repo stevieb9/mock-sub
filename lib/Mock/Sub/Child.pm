@@ -175,5 +175,82 @@ sub DESTROY {
 }
 sub _end {}; # vim fold placeholder
 
+__END__
+
+=head1 NAME
+
+Mock::Sub::Child - Provides for Mock::Sub
+
+=head1 METHODS
+
+Please refer to the C<Mock::Sub> parent module for full documentation. The
+descriptions here are just a briefing.
+
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+=head2 new
+
+This method can only be called by the parent C<Mock::Sub> module.
+
+=head2 called
+
+Returns bool whether the mocked sub has been called yet.
+
+=head2 called_count
+
+Returns an integer representing the number of times the mocked sub has been called.
+
+=head2 called_with
+
+Returns a list of arguments the mocked sub was called with.
+
+=head2 mock
+
+Re-mocks an unmocked sub back to the same subroutine it was originally mocked with.
+
+=head2 mocked_state
+
+Returns bool whether the sub the object represents is currently mocked or not.
+
+=head2 name
+
+Returns the name of the sub this object is mocking.
+
+=head2 return_value
+
+Send in any values (list or scalar) that you want the mocked sub to return when called.
+
+=head2 side_effect
+
+Send in a code reference with any actions you want the mocked sub to perform after it's been called.
+
+=head2 reset
+
+Resets all state of the object back to default (does not unmock the sub).
+
+=head2 unmock
+
+Restores original functionality of the mocked sub, and calls C<reset()> on the object.
+
+=cut
 1;
 

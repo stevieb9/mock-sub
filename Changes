@@ -1,5 +1,12 @@
 Revision history for Mock-Sub
 
+1.05    xxx
+        - added tests for mocked_objects()
+        - Child.pm now has basic pod (mostly to satisfy pod tests)
+
+1.04    2016-01-08
+        - MANIFEST updates
+
 1.03    2015-12-10
         - completely reworked distribution into two modules (parent and Child)
         - we now have the ability to mock out CORE::GLOBAL functions

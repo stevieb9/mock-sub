@@ -62,8 +62,8 @@ sub mocked_objects {
     my $self = shift;
 
     my @mocked;
-    for (keys %{ $self->{mocked} }){
-        push @mocked, $self->{mocked}{$_}{object};
+    for (keys %{ $self->{objects} }){
+        push @mocked, $self->{objects}{$_}{obj};
     }
     return @mocked;
 }
@@ -393,7 +393,9 @@ L<https://github.com/stevieb9/mock-sub>
 
 =head1 BUILD RESULTS
 
-Travis-CI: L<https://travis-ci.org/stevieb9/mock-sub>
+=begin html
+
+<a href="https://travis-ci.org/stevieb9/mock-sub">
 
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=Mock-Sub>
 
