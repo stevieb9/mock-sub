@@ -395,11 +395,11 @@ L<https://github.com/stevieb9/mock-sub>
 
 =begin html
 
-<a href="https://travis-ci.org/stevieb9/mock-sub">
-
 CPAN Testers: L<http://matrix.cpantesters.org/?dist=Mock-Sub>
 
-Coverage: L<https://coveralls.io/github/stevieb9/mock-sub>
+<a href="http://travis-ci.org/stevieb9/mock-sub"><img src="https://secure.travis-ci.org/stevieb9/mock-sub.png"/></a>
+
+<a href='https://coveralls.io/github/stevieb9/mock-sub?branch=master'><img src='https://coveralls.io/repos/stevieb9/mock-sub/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
 
 =head1 SUPPORT
 
