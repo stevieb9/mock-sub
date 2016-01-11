@@ -302,12 +302,6 @@ REPOSITORY
 
 BUILD RESULTS
 
-    Travis-CI: https://travis-ci.org/stevieb9/mock-sub
-
-    CPAN Testers: http://matrix.cpantesters.org/?dist=Mock-Sub
-
-    Coverage: https://coveralls.io/github/stevieb9/mock-sub
-
 SUPPORT
 
     You can find documentation for this module with the perldoc command.
