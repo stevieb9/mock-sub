@@ -401,6 +401,8 @@ CPAN Testers: L<http://matrix.cpantesters.org/?dist=Mock-Sub>
 
 <a href='https://coveralls.io/github/stevieb9/mock-sub?branch=master'><img src='https://coveralls.io/repos/stevieb9/mock-sub/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
 
+=end html
+
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
