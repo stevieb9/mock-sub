@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 use lib 't/data';
 
@@ -86,27 +86,28 @@ BEGIN {
     like ($@, qr/no longer permitted/, "can't call mock() from the Mock::Sub class");
 }
 {# new() w/side_effect
-
     my $mock = Mock::Sub->new(side_effect => sub { return 55; });
-
     is (ref $mock, 'Mock::Sub', "instantiating with new() works");
-
     my $test = $mock->mock('One::foo');
-
     my $ret = Two::test;
-
     is ($ret, 55, "instantiating with side_effect works");
 }
 {# new() w/side_effect
 
     my $mock = Mock::Sub->new(side_effect => {a => 1});
-
     is (ref $mock, 'Mock::Sub', "bad side_effect in new for mock works");
-
     eval { my $test = $mock->mock('One::foo'); };
-
     like ($@, qr/side_effect parameter must be a code/, "croaks if side_effect in new is bad");
+}
+{# new() w/side_effect - Child.pm
 
+    eval { my $child = Mock::Sub::Child->new(side_effect => sub { return 55; }); };
+    is ($@, '', "instantiating with side_effect in Child works");
+}
+{# new() w/side_effect
+
+    eval { my $child = Mock::Sub::Child->new(side_effect => {a => 1}); };
+    like ($@, qr/side_effect parameter must be a code/, "croaks if side_effect in new is bad");
 }
 sub testing {
     return 'testing';
