@@ -13,8 +13,8 @@ BEGIN {
 
 {
     my $mock = Mock::Sub->new;
-    eval { $mock->mock('One::foo', side_effect => sub { die "died"; }); };
-    like ($@, qr/in void context/, "class calling mock() in void context dies");
+    eval { Mock::Sub->mock('One::foo', side_effect => sub { die "died"; }); };
+    like ($@, qr/calling mock\(\) on the Mock::Sub/, "class calling mock() dies");
 }
 {
     my $mock = Mock::Sub->new;
