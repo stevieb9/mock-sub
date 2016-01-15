@@ -302,6 +302,8 @@ REPOSITORY
 
 BUILD RESULTS
 
+    CPAN Testers: http://matrix.cpantesters.org/?dist=Mock-Sub
+
 SUPPORT
 
     You can find documentation for this module with the perldoc command.
