@@ -113,7 +113,7 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
     my $foo = $mock->mock('Package::foo');
     my $bar = $mock->mock('Package::bar');
 
-    # wait until the mocked sub is called
+    # wait until a mocked sub is called
 
     Package::foo();
 
@@ -126,14 +126,14 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     # have the mocked sub return something when it's called (list or scalar).
     # See new() to find out how to set a return value once and have it used in
-    # all child mocks
+    # all child mocked subs
 
     $foo->return_value(1, 2, {a => 1});
     my @return = Package::foo;
 
     # have the mocked sub perform an action (the side effect function receives
     # the parameters sent into the mocked sub). See new() to find out how to
-    # set side_effect up once, and have it copied to all child mocks
+    # set side_effect up once, and have it copied to all child mocked subs
 
     $foo->side_effect( sub { die "eval catch" if @_; } );
 
@@ -157,7 +157,7 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     # re-mock a sub using the same object after unmocking (this is the only
     # time void context with mock() is permitted). Note that child mocks don't
-    # take a sub parameter to mock()
+    # take a sub parameter to mock(), as they simply re-mock their original sub
 
     $foo->mock;
 
