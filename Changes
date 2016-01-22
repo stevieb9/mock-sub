@@ -1,8 +1,11 @@
 Revision history for Mock-Sub
 
-1.05    xxx
+1.05    2016-01-22
         - added tests for mocked_objects()
-        - Child.pm now has basic pod (mostly to satisfy pod tests)
+        - closes #15; Child.pm now has basic pod (mostly to satisfy pod tests)
+        - also #15; added .list to MANIFEST.SKIP to ignore RHEL vendor specific build 
+          files (reported by Denis Fateyev)
+        - closes #13; this was previously fixed
 
 1.04    2016-01-08
         - MANIFEST updates
