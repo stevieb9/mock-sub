@@ -180,8 +180,8 @@ MOCK OBJECT METHODS
 
  mocked_subs
 
-    Returns a list of all subs that are currently mocked under the parent
-    mock object.
+    Returns a list of all the names of the subs that are currently mocked
+    under the parent mock object.
 
  mocked_objects
 
@@ -190,9 +190,9 @@ MOCK OBJECT METHODS
 
  mocked_state('Sub::Name')
 
-    Returns whether a sub currently under the parent mock object is mocked
-    or not. Croaks if there hasn't been a child sub object created with
-    this sub name.
+    Returns 1 if the sub currently under the parent mock object is mocked
+    or not, and 0 if not. Croaks if there hasn't been a child sub object
+    created with this sub name.
 
 SUB OBJECT METHODS
 
@@ -212,7 +212,8 @@ SUB OBJECT METHODS
 
  called
 
-    Returns true if the sub being mocked has been called.
+    Returns true (1) if the sub being mocked has been called, and false (0)
+    if not.
 
  called_count
 
@@ -226,7 +227,7 @@ SUB OBJECT METHODS
  mocked_state
 
     Returns true (1) if the sub the object refers to is currently mocked,
-    and false if not.
+    and false (0) if not.
 
  name
 

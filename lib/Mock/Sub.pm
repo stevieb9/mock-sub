@@ -274,8 +274,8 @@ set, change or remove these values after instantiation of a child sub object.
 
 =head2 mocked_subs
 
-Returns a list of all subs that are currently mocked under the parent mock
-object.
+Returns a list of all the names of the subs that are currently mocked under
+the parent mock object.
 
 =head2 mocked_objects
 
@@ -284,8 +284,9 @@ if its sub is currently mocked or not.
 
 =head2 mocked_state('Sub::Name')
 
-Returns whether a sub currently under the parent mock object is mocked or not.
-Croaks if there hasn't been a child sub object created with this sub name.
+Returns 1 if the sub currently under the parent mock object is mocked or not,
+and 0 if not. Croaks if there hasn't been a child sub object created with this
+sub name.
 
 =head1 SUB OBJECT METHODS
 
@@ -305,7 +306,7 @@ side_effect and return_value parameters).
 
 =head2 C<called>
 
-Returns true if the sub being mocked has been called.
+Returns true (1) if the sub being mocked has been called, and false (0) if not.
 
 =head2 C<called_count>
 
@@ -318,8 +319,8 @@ we're called before the mocked sub has been called.
 
 =head2 C<mocked_state>
 
-Returns true (1) if the sub the object refers to is currently mocked, and false if
-not.
+Returns true (1) if the sub the object refers to is currently mocked, and
+false (0) if not.
 
 =head2 C<name>
 
