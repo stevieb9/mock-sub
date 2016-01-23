@@ -160,7 +160,7 @@ MOCK OBJECT METHODS
 
  mock('sub', %opts)
 
-    Instantiates and returns a new mock object on each call 'sub' is the
+    Instantiates and returns a new mock object on each call. 'sub' is the
     name of the subroutine to mock (requires full package name if the sub
     isn't in main::).
 
@@ -169,9 +169,10 @@ MOCK OBJECT METHODS
 
     Optional parameters:
 
-    Both return_value and side_effect can be set in this method to
-    individualize each mock object. Set in new to have all mock objects use
-    the same configuration, and for an example of each.
+    See new() for a description of the parameters. Both the return_value
+    and side_effect parameters can be set in this method to individualize
+    each mock object, and will override the global configuration if set in
+    new().
 
     There's also return_value() and side_effect() methods if you want to
     set, change or remove these values after instantiation of a child sub

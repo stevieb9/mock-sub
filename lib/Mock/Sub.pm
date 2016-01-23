@@ -256,7 +256,7 @@ created with this object. See C<side_effect()> method.
 
 =head2 C<mock('sub', %opts)>
 
-Instantiates and returns a new mock object on each call 'sub' is the name of
+Instantiates and returns a new mock object on each call. 'sub' is the name of
 the subroutine to mock (requires full package name if the sub isn't in
 C<main::>).
 
@@ -265,9 +265,9 @@ doesn't return anything.
 
 Optional parameters:
 
-Both C<return_value> and C<side_effect> can be set in this method to
-individualize each mock object. Set in C<new> to have all mock objects use
-the same configuration, and for an example of each.
+See C<new()> for a description of the parameters. Both the C<return_value> and
+C<side_effect> parameters can be set in this method to individualize each mock
+object, and will override the global configuration if set in C<new()>.
 
 There's also C<return_value()> and C<side_effect()> methods if you want to
 set, change or remove these values after instantiation of a child sub object.
