@@ -240,14 +240,14 @@ Optional options:
 
 =over 4
 
-=item C<return_value>
+=item C<return_value => $scalar>
 
 Set this to have all mocked subs created with this mock object return anything
 you wish (accepts a single scalar only. See C<return_value()> method to return
 a list and for further information). You can also set it in individual mocks
 only (see C<mock()>).
 
-=item C<side_effect>
+=item C<side_effect => $cref>
 
 Set this in C<new()> to have the side effect passed into all child mocks
 created with this object. See C<side_effect()> method.

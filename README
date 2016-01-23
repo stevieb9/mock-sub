@@ -146,14 +146,14 @@ MOCK OBJECT METHODS
 
     Optional options:
 
-    return_value
+    return_value = $scalar>
 
       Set this to have all mocked subs created with this mock object return
       anything you wish (accepts a single scalar only. See return_value()
       method to return a list and for further information). You can also
       set it in individual mocks only (see mock()).
 
-    side_effect
+    side_effect = $cref>
 
       Set this in new() to have the side effect passed into all child mocks
       created with this object. See side_effect() method.
