@@ -13,8 +13,7 @@ SYNOPSIS
     
         my $mock = Mock::Sub->new;
     
-        # mock some subs... all of the following are children under the
-        # umbrella of the above $mock object we created
+        # mock some subs...
     
         my $foo = $mock->mock('Package::foo');
         my $bar = $mock->mock('Package::bar');
@@ -50,12 +49,11 @@ SYNOPSIS
     
         $foo->reset;
     
-        # restore original functionality to the sub (we do this by default on
-        # DESTROY()). This also calls reset() on the ojbect
+        # restore original functionality to the sub
     
         $foo->unmock;
     
-        # re-mock a sub using the same object after unmocking
+        # re-mock a previously unmocked sub
     
         $foo->mock;
     
@@ -71,7 +69,6 @@ SYNOPSIS
     
         BEGIN {
             $mock = Mock::Sub->new;
-            # core function caller() is now mocked permanently after the following line
             $caller = $mock->mock('caller');
         };
     
@@ -259,7 +256,8 @@ SUB OBJECT METHODS
  reset
 
     Resets the functional parameters (return_value, side_effect), along
-    with called() and called_count() back to undef/false.
+    with called() and called_count() back to undef/false. Does not restore
+    the sub back to its original state.
 
 NOTES
 
