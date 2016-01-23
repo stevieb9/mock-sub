@@ -125,28 +125,22 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
     $foo->called_with;  # array of params sent to sub
 
     # have the mocked sub return something when it's called (list or scalar).
-    # See new() to find out how to set a return value once and have it used in
-    # all child mocked subs
 
     $foo->return_value(1, 2, {a => 1});
     my @return = Package::foo;
 
-    # have the mocked sub perform an action (the side effect function receives
-    # the parameters sent into the mocked sub). See new() to find out how to
-    # set side_effect up once, and have it copied to all child mocked subs
+    # have the mocked sub perform an action
 
     $foo->side_effect( sub { die "eval catch" if @_; } );
 
     eval { Package::foo(1); };
     like ($@, qr/eval catch/, "side_effect worked with params");
 
-    # extract the parameters the sub was called with (best if you know what
-    # the original sub is expecting)
+    # extract the parameters the sub was called with
 
     my @args = $foo->called_with;
 
-    # reset the mock object for re-use within the same scope (does not restore
-    # the mocked sub)
+    # reset the mock object for re-use within the same scope
 
     $foo->reset;
 
@@ -155,15 +149,13 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     $foo->unmock;
 
-    # re-mock a sub using the same object after unmocking (this is the only
-    # time void context with mock() is permitted). Note that child mocks don't
-    # take a sub parameter to mock(), as they simply re-mock their original sub
+    # re-mock a sub using the same object after unmocking
 
     $foo->mock;
 
     # check if a sub is mocked
 
-    my $state = $foo->state;
+    my $state = $foo->mocked_state;
 
     # mock out a CORE:: function. Be warned that this *must* be done within
     # compile stage (BEGIN), and the function can NOT be unmocked prior
@@ -213,7 +205,7 @@ MyModule::first).
         my $arg = shift;
         
         if ($arg == 1){
-            # how do you test this... there's no return etc.
+            # how do you test this?... there's no return etc.
             $other->first();        
         }
         if ($arg == 2){
