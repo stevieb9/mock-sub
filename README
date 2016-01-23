@@ -53,7 +53,7 @@ SYNOPSIS
     
         $foo->unmock;
     
-        # re-mock a previously unmocked sub
+        # re-mock a previously unmock()ed sub
     
         $foo->mock;
     
