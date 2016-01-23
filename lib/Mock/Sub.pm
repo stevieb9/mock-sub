@@ -107,8 +107,7 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     my $mock = Mock::Sub->new;
 
-    # mock some subs... all of the following are children under the
-    # umbrella of the above $mock object we created
+    # mock some subs...
 
     my $foo = $mock->mock('Package::foo');
     my $bar = $mock->mock('Package::bar');
@@ -144,12 +143,11 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     $foo->reset;
 
-    # restore original functionality to the sub (we do this by default on
-    # DESTROY()). This also calls reset() on the ojbect
+    # restore original functionality to the sub
 
     $foo->unmock;
 
-    # re-mock a sub using the same object after unmocking
+    # re-mock a previously unmocked sub
 
     $foo->mock;
 
@@ -165,7 +163,6 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     BEGIN {
         $mock = Mock::Sub->new;
-        # core function caller() is now mocked permanently after the following line
         $caller = $mock->mock('caller');
     };
 
@@ -353,7 +350,8 @@ Can be a scalar or list. Send in C<undef> to remove a previously set value.
 =head2 C<reset>
 
 Resets the functional parameters (C<return_value>, C<side_effect>), along
-with C<called()> and C<called_count()> back to undef/false.
+with C<called()> and C<called_count()> back to undef/false. Does not restore
+the sub back to its original state.
 
 =head1 NOTES
 
