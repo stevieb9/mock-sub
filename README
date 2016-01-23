@@ -55,7 +55,7 @@ SYNOPSIS
     
         # re-mock a previously unmock()ed sub
     
-        $foo->mock;
+        $foo->remock;
     
         # check if a sub is mocked
     
@@ -206,7 +206,8 @@ SUB OBJECT METHODS
 
  remock
 
-    Re-mocks the sub within the object after calling unmock on it.
+    Re-mocks the sub within the object after calling unmock on it (accepts
+    the side_effect and return_value parameters).
 
  called
 

@@ -32,7 +32,7 @@ BEGIN {
     my @ret1 =  grep /One::foo/, @names;
     is ($ret1[0], undef, "the unmocked sub isn't in the list of names");
 
-    $foo->mock('One::foo');
+    $foo->remock('One::foo');
 
     @names = $mock->mocked_subs;
 

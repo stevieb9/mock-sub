@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More;
 
 use lib 't/data';
 
@@ -27,7 +27,7 @@ BEGIN {
     $test->unmock;
     is ($test->called, 0, "after unmock, called() is 0");
 
-    $test->mock('One::foo');
+    $test->remock('One::foo');
 
     Two::test;
     is ($test->called, 1, "after re-mock, called is 1 again");
@@ -35,3 +35,4 @@ BEGIN {
 
 }
 
+done_testing();

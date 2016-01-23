@@ -22,7 +22,7 @@ BEGIN {
     $ret = One::foo();
     is ($ret, 'foo', "One::foo is now unmocked with unmock()");
 
-    $foo->mock(return_value => 'Mocked');
+    $foo->remock(return_value => 'Mocked');
     $ret = One::foo();
     is ($foo->called_count, 1, "call count is proper in obj void context");
     is ($ret, 'Mocked', "One::foo is mocked after being unmocked");

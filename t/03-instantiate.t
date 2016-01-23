@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More;
 
 use lib 't/data';
 
@@ -109,6 +109,19 @@ BEGIN {
     eval { my $child = Mock::Sub::Child->new(side_effect => {a => 1}); };
     like ($@, qr/side_effect parameter must be a code/, "croaks if side_effect in new is bad");
 }
+{
+    my $mock = Mock::Sub->new;
+    my $foo = $mock->mock('One::foo');
+
+    delete $foo->{name};
+
+    eval { $foo->_mock('One::foo'); };
+
+    like ($@, qr/can't call mock\(\) on a child object/, "can't call mock() from the Mock::Sub class");
+}
+
+done_testing();
+
 sub testing {
     return 'testing';
 }

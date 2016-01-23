@@ -29,7 +29,7 @@ BEGIN {
 
     is ($mock->mocked_objects, 3, "after an unmock, return is still correct");
 
-    $foo->mock;
+    $foo->remock;
 
     for my $obj (@objects){
         is ($obj->mocked_state, 1, "objects can call state");

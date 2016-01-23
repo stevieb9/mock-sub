@@ -36,7 +36,7 @@ BEGIN {
     $test->unmock;
     is ($test->called_count, 0, "does the right thing after unmock");
 
-    $test->mock;
+    $test->remock;
     Two::test;
     is ($test->called_count, 1, "does the right thing after re-mock");
 }

@@ -1,8 +1,10 @@
 Revision history for Mock-Sub
 
 1.06    xxx
-        - Child::mock() is now only for the parent. New remock() method now
-          performs what mock() used to do
+        - new remock() method does what Child::mock() used to do.
+        - Child::mock() renamed to Child::_mock(), and is now private
+          (fixes #17)
+        - more documentation cleanup
 
 1.05    2016-01-22
         - added tests for mocked_objects()

@@ -23,10 +23,10 @@ BEGIN {
 }
 {
     my $child = Mock::Sub::Child->new;
-    eval { $child->mock('One::foo', side_effect => sub { die "died"; }); };
+    eval { $child->mock };
     like (
-        $@, qr/can't call mock()/,
-        "can't call mock() on child if it wasn't initialized by Mock::Sub"
+        $@, qr/Can't locate object method "mock"/,
+        "Mock::Sub::Child no longer has a mock() method"
     );
 }
 {
@@ -42,13 +42,13 @@ BEGIN {
     is ($ret, 'foo', "child object is unmocked");
     is ($foo->mocked_state, 0, "confirm child obj is unmocked");
 
-    $foo->mock;
+    $foo->remock;
     $ret = One::foo();
 
-    is ($foo->mocked_state, 1, "child obj calling mock in void w/ no params is mocked");
-    is ($ret, undef, "child obj calling mock in void w/ params is mocked");
+    is ($foo->mocked_state, 1, "remock() remocks");
+    is ($ret, undef, "child obj calling remock in void w/ params is mocked");
 
-    $foo->mock(return_value => 'void');
+    $foo->remock(return_value => 'void');
     $ret = One::foo();
-    is ($ret, 'void', "child obj calling mock in void with return_value works");
+    is ($ret, 'void', "child obj calling remock in void with return_value works");
 }

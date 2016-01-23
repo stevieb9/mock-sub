@@ -21,6 +21,7 @@ t/11-state.t
 t/12-mocked_subs.t
 t/13-mocked_objects.t
 t/14-core_subs.t
+t/15-remock.t
 t/data/One.pm
 t/data/Two.pm
 t/manifest.t

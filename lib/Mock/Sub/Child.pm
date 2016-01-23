@@ -17,7 +17,7 @@ sub new {
     }
     return $self;
 }
-sub mock {
+sub _mock {
     my $self = shift;
 
     # throw away the sub name if it's sent in and we're not called
@@ -36,6 +36,11 @@ sub mock {
             croak "can't call mock() on a child object before it is already " .
                   "initialized with the parent mock object. ";
         }
+    }
+
+    if ($caller ne 'Mock::Sub::mock' && $caller ne 'Mock::Sub::Child::remock'){
+        croak "the _mock() method is not a public API call. For re-mocking " .
+              "an existing sub in an existing sub object, use remock().\n";
     }
 
     my $sub = $self->name || shift;
@@ -114,7 +119,7 @@ sub mock {
     return $self;
 }
 sub remock {
-    $_[0]->mock;
+    shift->_mock(@_);
 }
 sub unmock {
     my $self = shift;

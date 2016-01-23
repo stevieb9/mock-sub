@@ -37,7 +37,7 @@ BEGIN {
         "can't call mocked_state() on parent if a child hasn't been initialized and mocked"
     );
 
-    $foo->mock();
+    $foo->remock;
     is ($foo->mocked_state, 1, "obj has proper mock state with 2 mocks");
     is ($foo->mocked_state, 1, "...and original mock obj still has state");
 

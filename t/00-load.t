@@ -21,7 +21,7 @@ can_ok('Mock::Sub', 'DESTROY');
 
 
 can_ok('Mock::Sub::Child', 'new');
-can_ok('Mock::Sub::Child', 'mock');
+can_ok('Mock::Sub::Child', '_mock');
 can_ok('Mock::Sub::Child', 'unmock');
 can_ok('Mock::Sub::Child', 'name');
 can_ok('Mock::Sub::Child', 'called');

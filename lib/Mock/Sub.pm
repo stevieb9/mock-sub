@@ -39,7 +39,7 @@ sub mock {
     $child->return_value($self->{return_value});
 
     $self->{objects}{$sub}{obj} = $child;
-    $child->mock($sub);
+    $child->_mock($sub);
 
     # remove the REFCNT to the child, or else DESTROY won't be called
     weaken $self->{objects}{$sub}{obj};
@@ -149,7 +149,7 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     # re-mock a previously unmock()ed sub
 
-    $foo->mock;
+    $foo->remock;
 
     # check if a sub is mocked
 
@@ -300,7 +300,8 @@ the object.
 
 =head2 C<remock>
 
-Re-mocks the sub within the object after calling C<unmock> on it.
+Re-mocks the sub within the object after calling C<unmock> on it (accepts the
+side_effect and return_value parameters).
 
 =head2 C<called>
 
