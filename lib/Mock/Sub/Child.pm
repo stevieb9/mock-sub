@@ -113,6 +113,9 @@ sub mock {
 
     return $self;
 }
+sub remock {
+    $_[0]->mock;
+}
 sub unmock {
     my $self = shift;
     my $sub = $self->{name};
@@ -189,27 +192,6 @@ descriptions here are just a briefing.
 =head2 new
 
 This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
-=head2 new
-
-This method can only be called by the parent C<Mock::Sub> module.
 
 =head2 called
 
@@ -224,6 +206,11 @@ Returns an integer representing the number of times the mocked sub has been call
 Returns a list of arguments the mocked sub was called with.
 
 =head2 mock
+
+This method should only be called by the parent mock object. You shouldn't be
+calling this.
+
+=head2 remock
 
 Re-mocks an unmocked sub back to the same subroutine it was originally mocked with.
 

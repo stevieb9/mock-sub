@@ -146,35 +146,36 @@ MOCK OBJECT METHODS
 
     Optional options:
 
-    return_value = $scalar>
+    return_value => $scalar
 
       Set this to have all mocked subs created with this mock object return
       anything you wish (accepts a single scalar only. See return_value()
       method to return a list and for further information). You can also
-      set it in individual mocks only (see mock()).
+      set it in individual mocks only (see return_value() method).
 
-    side_effect = $cref>
+    side_effect => $cref
 
       Set this in new() to have the side effect passed into all child mocks
       created with this object. See side_effect() method.
 
  mock('sub', %opts)
 
-    Instantiates and returns a new mock object on each call (calling in
-    void context is not permitted). 'sub' is the name of the subroutine to
-    mock (requires full package name if the sub isn't in main::.
+    Instantiates and returns a new mock object on each call 'sub' is the
+    name of the subroutine to mock (requires full package name if the sub
+    isn't in main::).
 
     The mocked sub will return undef if a return value isn't set, or a side
     effect doesn't return anything.
 
-    Optional options:
+    Optional parameters:
 
     Both return_value and side_effect can be set in this method to
     individualize each mock object. Set in new to have all mock objects use
-    the same configuration.
+    the same configuration, and for an example of each.
 
     There's also return_value() and side_effect() methods if you want to
-    set, change or remove these values after instantiation.
+    set, change or remove these values after instantiation of a child sub
+    object.
 
  mocked_subs
 
@@ -189,7 +190,8 @@ MOCK OBJECT METHODS
  mocked_state('Sub::Name')
 
     Returns whether a sub currently under the parent mock object is mocked
-    or not. Croaks if there is no object with the sub name parameter.
+    or not. Croaks if there hasn't been a child sub object created with
+    this sub name.
 
 SUB OBJECT METHODS
 
@@ -197,14 +199,14 @@ SUB OBJECT METHODS
     parent mock object. See "MOCK OBJECT METHODS" for methods related to
     the parent mock object.
 
- mock
-
-    Re-mocks the sub within the object after calling unmock on it.
-
  unmock
 
     Restores the original functionality back to the sub, and runs reset()
     on the object.
+
+ remock
+
+    Re-mocks the sub within the object after calling unmock on it.
 
  called
 
@@ -221,19 +223,19 @@ SUB OBJECT METHODS
 
  mocked_state
 
-    Returns true if the sub the object refers to is currently mocked, and
-    false if not.
+    Returns true (1) if the sub the object refers to is currently mocked,
+    and false if not.
 
  name
 
-    Returns the full name of the sub being mocked, as entered into mock().
+    Returns the name of the sub being mocked.
 
  side_effect($cref)
 
-    Add (or change/remove) a side effect after instantiation.
+    Add (or change/delete) a side effect after instantiation.
 
     Send in a code reference containing an action you'd like the mocked sub
-    to perform (die() is useful for testing with eval()).
+    to perform.
 
     The side effect function will receive all parameters sent into the
     mocked sub.
@@ -249,9 +251,9 @@ SUB OBJECT METHODS
 
  return_value
 
-    Add (or change, delete) the mocked sub's return value after
-    instantiation. Can be a scalar or list. Send in undef to remove a
-    previously set value.
+    Add (or change/delete) the mocked sub's return value after
+    instantiation. Can be a scalar or list. Send in undef to remove
+    previously set values.
 
  reset
 

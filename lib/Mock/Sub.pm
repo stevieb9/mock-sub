@@ -240,14 +240,14 @@ Optional options:
 
 =over 4
 
-=item C<return_value => $scalar>
+=item C<return_value =E<gt> $scalar>
 
 Set this to have all mocked subs created with this mock object return anything
 you wish (accepts a single scalar only. See C<return_value()> method to return
 a list and for further information). You can also set it in individual mocks
-only (see C<mock()>).
+only (see C<return_value()> method).
 
-=item C<side_effect => $cref>
+=item C<side_effect =E<gt> $cref>
 
 Set this in C<new()> to have the side effect passed into all child mocks
 created with this object. See C<side_effect()> method.
@@ -256,21 +256,21 @@ created with this object. See C<side_effect()> method.
 
 =head2 C<mock('sub', %opts)>
 
-Instantiates and returns a new mock object on each call (calling in
-void context is not permitted). 'sub' is the name of the subroutine to mock
-(requires full package name if the sub isn't in C<main::>.
+Instantiates and returns a new mock object on each call 'sub' is the name of
+the subroutine to mock (requires full package name if the sub isn't in
+C<main::>).
 
 The mocked sub will return undef if a return value isn't set, or a side effect
 doesn't return anything.
 
-Optional options:
+Optional parameters:
 
 Both C<return_value> and C<side_effect> can be set in this method to
 individualize each mock object. Set in C<new> to have all mock objects use
-the same configuration.
+the same configuration, and for an example of each.
 
 There's also C<return_value()> and C<side_effect()> methods if you want to
-set, change or remove these values after instantiation.
+set, change or remove these values after instantiation of a child sub object.
 
 =head2 mocked_subs
 
@@ -285,7 +285,7 @@ if its sub is currently mocked or not.
 =head2 mocked_state('Sub::Name')
 
 Returns whether a sub currently under the parent mock object is mocked or not.
-Croaks if there is no object with the sub name parameter.
+Croaks if there hasn't been a child sub object created with this sub name.
 
 =head1 SUB OBJECT METHODS
 
@@ -293,14 +293,14 @@ These methods are for the children mocked sub objects returned from the
 parent mock object. See L<MOCK OBJECT METHODS> for methods related
 to the parent mock object.
 
-=head2 C<mock>
-
-Re-mocks the sub within the object after calling C<unmock> on it.
-
 =head2 C<unmock>
 
 Restores the original functionality back to the sub, and runs C<reset()> on
 the object.
+
+=head2 C<remock>
+
+Re-mocks the sub within the object after calling C<unmock> on it.
 
 =head2 C<called>
 
@@ -317,19 +317,19 @@ we're called before the mocked sub has been called.
 
 =head2 C<mocked_state>
 
-Returns true if the sub the object refers to is currently mocked, and false if
+Returns true (1) if the sub the object refers to is currently mocked, and false if
 not.
 
 =head2 C<name>
 
-Returns the full name of the sub being mocked, as entered into C<mock()>.
+Returns the name of the sub being mocked.
 
 =head2 C<side_effect($cref)>
 
-Add (or change/remove) a side effect after instantiation.
+Add (or change/delete) a side effect after instantiation.
 
 Send in a code reference containing an action you'd like the
-mocked sub to perform (C<die()> is useful for testing with C<eval()>).
+mocked sub to perform.
 
 The side effect function will receive all parameters sent into the mocked sub.
 
@@ -344,8 +344,8 @@ it does: C<sub { ...; undef; }>.
 
 =head2 C<return_value>
 
-Add (or change, delete) the mocked sub's return value after instantiation.
-Can be a scalar or list. Send in C<undef> to remove a previously set value.
+Add (or change/delete) the mocked sub's return value after instantiation.
+Can be a scalar or list. Send in C<undef> to remove previously set values.
 
 =head2 C<reset>
 
