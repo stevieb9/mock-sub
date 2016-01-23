@@ -147,7 +147,7 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     $foo->unmock;
 
-    # re-mock a previously unmocked sub
+    # re-mock a previously unmock()ed sub
 
     $foo->mock;
 
