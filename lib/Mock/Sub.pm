@@ -7,7 +7,7 @@ use Carp qw(croak);
 use Mock::Sub::Child;
 use Scalar::Util qw(weaken);
 
-our $VERSION = '1.06';
+our $VERSION = '1.07';
 
 sub new {
     my $self = bless {}, shift;
