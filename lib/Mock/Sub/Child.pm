@@ -6,6 +6,8 @@ use warnings;
 use Carp qw(croak);
 use Scalar::Util qw(weaken);
 
+use Data::Dumper;
+
 our $VERSION = '1.07';
 
 sub new {
@@ -119,6 +121,7 @@ sub _mock {
     return $self;
 }
 sub _wrap {
+
     my $self = shift;
     my $sub = shift;
 
@@ -155,15 +158,44 @@ sub _wrap {
         no warnings 'redefine';
         no strict 'refs';
 
-        my $mock = $self;
-        weaken $mock;
+        my $wrap = $self;
+        weaken $wrap;
 
         *$sub = sub {
 
-            @{ $mock->{called_with} } = @_;
-            ++$mock->{called_count};
+            @{ $wrap->{called_with} } = @_;
+            ++$wrap->{called_count};
 
-            $self->{orig}->(@_);
+            my ($pre_return, $post_return) = ([], []);
+
+            if ($wrap->{pre}){
+                $pre_return = [ $wrap->{pre}->(@_) ];
+            }
+
+            my $sub_return = [ $wrap->{orig}->(@_) ] || [];
+
+            if (defined $wrap->{post}){
+                $post_return = [ $wrap->{post}->($pre_return, $sub_return) ];
+            }
+
+            $post_return = undef if ! $wrap->{wrap_post_return};
+
+            if (! $wrap->{pre} && ! $wrap->{post}) {
+                if (! wantarray){
+                    return $sub_return->[0];
+                }
+                else {
+                    return @$sub_return;
+                }
+            }
+            else {
+                if (defined $post_return->[0] && $wrap->{wrap_post_return}){
+                    return wantarray ? @$post_return : $post_return->[0];
+                }
+                else {
+                    return wantarray ? @$sub_return : $sub_return->[0];
+                }
+            }
         };
     }
 
@@ -220,8 +252,13 @@ sub pre {
     $_[0]->{pre} = $_[1];
 }
 sub post {
-    $_[0]->_check_wrap($_[1], 'post');
-    $_[0]->{post} = $_[1];
+    my $self = shift;
+    my $cref = shift;
+    my %p = @_ if @_;
+
+    $self->_check_wrap($cref, 'post');
+    $self->{post} = $cref;
+    $self->{wrap_post_return} = $p{return};
 }
 sub return_value {
     my $self = shift;

@@ -69,8 +69,8 @@ sub wrap {
 
     my $child = Mock::Sub::Child->new;
 
-    $child->pre($self->{pre});
-    $child->post($self->{post});
+    $child->pre($self->{pre}) if $self->{pre};
+    $child->post($self->{post}) if $self->{post};
 
     $self->{objects}{$sub}{obj} = $child;
     $child->_wrap($sub);
