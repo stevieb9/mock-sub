@@ -46,6 +46,40 @@ sub mock {
 
     return $child;
 }
+sub wrap {
+    my $self = shift;
+    my $sub = shift;
+
+    my %p = @_;
+    for (keys %p){
+        $self->{$_} = $p{$_};
+    }
+
+    if (! defined wantarray){
+        croak "\n\ncalling wrap() in void context isn't allowed. ";
+    }
+
+    for (qw(side_effect return_value)){
+        if (defined $self->{$_}){
+            warn "$_ parameter has no effect with wrap()... use pre() and " .
+                 "post() instead.\n";
+            delete $self->{$_};
+        }
+    }
+
+    my $child = Mock::Sub::Child->new;
+
+    $child->pre($self->{pre});
+    $child->post($self->{post});
+
+    $self->{objects}{$sub}{obj} = $child;
+    $child->_wrap($sub);
+
+    # remove the REFCNT to the child, or else DESTROY won't be called
+    weaken $self->{objects}{$sub}{obj};
+
+    return $child;
+}
 sub mocked_subs {
     my $self = shift;
 

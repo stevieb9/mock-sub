@@ -118,6 +118,59 @@ sub _mock {
 
     return $self;
 }
+sub _wrap {
+    my $self = shift;
+    my $sub = shift;
+
+    my %p = @_;
+    for (keys %p){
+        $self->{$_} = $p{$_};
+    }
+
+    if ($sub !~ /::/) {
+        my $core_sub = "CORE::" . $sub;
+
+        if (defined &$core_sub && ${^GLOBAL_PHASE} eq 'START') {
+            warn "WARNING! we're attempting to override a global core " .
+                 "function. You will NOT be able to restore functionality " .
+                 "to this function.";
+
+            $sub = "CORE::GLOBAL::" . $sub;
+        }
+        else {
+            $sub = "main::$sub" if $sub !~ /::/;
+        }
+    }
+
+    if (! exists &$sub && $sub !~ /CORE::GLOBAL/){
+        croak "can't wrap() a non-existent sub. The sub specified does not exist";
+    }
+
+    $self->{name} = $sub;
+    $self->{orig} = \&$sub;
+
+    $self->{called_count} = 0;
+
+    {
+        no warnings 'redefine';
+        no strict 'refs';
+
+        my $mock = $self;
+        weaken $mock;
+
+        *$sub = sub {
+
+            @{ $mock->{called_with} } = @_;
+            ++$mock->{called_count};
+
+            $self->{orig}->(@_);
+        };
+    }
+
+    $self->{state} = 1;
+
+    return $self;
+}
 sub remock {
     shift->_mock(@_);
 }
@@ -162,6 +215,14 @@ sub reset {
         delete $_[0]->{$_};
     }
 }
+sub pre {
+    $_[0]->_check_wrap($_[1], 'pre');
+    $_[0]->{pre} = $_[1];
+}
+sub post {
+    $_[0]->_check_wrap($_[1], 'post');
+    $_[0]->{post} = $_[1];
+}
 sub return_value {
     my $self = shift;
     @{ $self->{return} } = @_;
@@ -173,6 +234,11 @@ sub side_effect {
 sub _check_side_effect {
     if (defined $_[1] && ref $_[1] ne 'CODE') {
         croak "\n\nside_effect parameter must be a code reference. ";
+    }
+}
+sub _check_wrap {
+    if (defined $_[1] && ref $_[1] ne 'CODE') {
+        croak "\n\nwrap()'s '$_[2]' parameter must be code a reference.";
     }
 }
 sub mocked_state {
