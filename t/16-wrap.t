@@ -36,13 +36,6 @@ BEGIN {
     my $w;
     my $mock = Mock::Sub->new;
 
-    eval { $w = $mock->wrap('wrap_1', post => 'adsf'); };
-    like ($@, qr/\Qwrap()'s 'post' param\E/, "wrap() post param needs cref");
-}
-{
-    my $w;
-    my $mock = Mock::Sub->new;
-
     eval { $w = $mock->wrap('wrap_1', pre => sub {return 10; } ); };
     is (ref $w, 'Mock::Sub::Child', "wrap()'s pre param works with a cref" );
 }
@@ -145,6 +138,44 @@ BEGIN {
     $w->unmock;
 
     is ($w->mocked_state, 0, "sub is unwrapped");
+}
+{
+    my ($msg, $w);
+    local $SIG{__WARN__} = sub { $msg = shift; };
+
+    my $mock = Mock::Sub->new;
+
+    $w = $mock->wrap('wrap_3', pre => sub { warn "pre"; } );
+
+    wrap_3();
+
+    like ($msg, qr/pre/, "pre() param in wrap() works");
+    $msg = '';
+
+    $w->pre(undef);
+
+    wrap_3();
+
+    is ($msg, '', "pre() with undef resets pre");
+}
+{
+    my $mock = Mock::Sub->new;
+
+    my $w = $mock->wrap(
+        'wrap_3',
+        post => sub { return $_[1]->[0] + 1000; },
+        return => 1,
+    );
+
+    my $ret = wrap_3();
+
+    is ($ret, 2000, "post param set in wrap() ok");
+
+    $w->post(undef);
+
+    $ret = wrap_3();
+
+    is ($ret, 1000, "post() with undef param eliminates post");
 }
 
 done_testing();

@@ -253,8 +253,26 @@ sub pre {
 }
 sub post {
     my $self = shift;
-    my $cref = shift;
-    my %p = @_ if @_;
+
+    if (! defined $_[0]) {
+        $self->{post} = undef;
+        return;
+    }
+
+    my @args = @_;
+    my ($cref, %p);
+
+    if (ref $args[0] eq 'CODE'){
+        $cref = shift;
+        %p = @_ if @_;
+    }
+    elsif ($args[0] eq 'return'){
+        $cref = pop @args;
+        %p = @args;
+    }
+    else {
+        croak "invalid parameters to post()";
+    }
 
     $self->_check_wrap($cref, 'post');
     $self->{post} = $cref;

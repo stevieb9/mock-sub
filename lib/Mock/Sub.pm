@@ -70,7 +70,13 @@ sub wrap {
     my $child = Mock::Sub::Child->new;
 
     $child->pre($self->{pre}) if $self->{pre};
-    $child->post($self->{post}) if $self->{post};
+
+    if (defined $self->{return} && $self->{post}){
+        $child->post($self->{post}, return => $self->{return});
+    }
+    elsif ($self->{post}){
+        $child->post($self->{post});
+    }
 
     $self->{objects}{$sub}{obj} = $child;
     $child->_wrap($sub);
