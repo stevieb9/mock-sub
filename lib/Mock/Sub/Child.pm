@@ -6,8 +6,6 @@ use warnings;
 use Carp qw(croak);
 use Scalar::Util qw(weaken);
 
-use Data::Dumper;
-
 our $VERSION = '1.07';
 
 sub new {
@@ -120,89 +118,6 @@ sub _mock {
 
     return $self;
 }
-sub _wrap {
-
-    my $self = shift;
-    my $sub = shift;
-
-    my %p = @_;
-    for (keys %p){
-        $self->{$_} = $p{$_};
-    }
-
-    if ($sub !~ /::/) {
-        my $core_sub = "CORE::" . $sub;
-
-        if (defined &$core_sub && ${^GLOBAL_PHASE} eq 'START') {
-            warn "WARNING! we're attempting to override a global core " .
-                 "function. You will NOT be able to restore functionality " .
-                 "to this function.";
-
-            $sub = "CORE::GLOBAL::" . $sub;
-        }
-        else {
-            $sub = "main::$sub" if $sub !~ /::/;
-        }
-    }
-
-    if (! exists &$sub && $sub !~ /CORE::GLOBAL/){
-        croak "can't wrap() a non-existent sub. The sub specified does not exist";
-    }
-
-    $self->{name} = $sub;
-    $self->{orig} = \&$sub;
-
-    $self->{called_count} = 0;
-
-    {
-        no warnings 'redefine';
-        no strict 'refs';
-
-        my $wrap = $self;
-        weaken $wrap;
-
-        *$sub = sub {
-
-            @{ $wrap->{called_with} } = @_;
-            ++$wrap->{called_count};
-
-            my ($pre_return, $post_return) = ([], []);
-
-            if ($wrap->{pre}){
-                $pre_return = [ $wrap->{pre}->(@_) ];
-            }
-
-            my $sub_return = [ $wrap->{orig}->(@_) ] || [];
-
-            if (defined $wrap->{post}){
-                $post_return = [ $wrap->{post}->($pre_return, $sub_return) ];
-            }
-
-            $post_return = undef if ! $wrap->{wrap_post_return};
-
-            if (! $wrap->{pre} && ! $wrap->{post}) {
-                if (! wantarray){
-                    return $sub_return->[0];
-                }
-                else {
-                    return @$sub_return;
-                }
-            }
-            else {
-                if (defined $post_return->[0] && $wrap->{wrap_post_return}){
-                    return wantarray ? @$post_return : $post_return->[0];
-                }
-                else {
-                    return wantarray ? @$sub_return : $sub_return->[0];
-                }
-            }
-        };
-    }
-
-    $self->{state} = 1;
-
-    return $self;
-}
 sub remock {
     shift->_mock(@_);
 }
@@ -247,37 +162,6 @@ sub reset {
         delete $_[0]->{$_};
     }
 }
-sub pre {
-    $_[0]->_check_wrap($_[1], 'pre');
-    $_[0]->{pre} = $_[1];
-}
-sub post {
-    my $self = shift;
-
-    if (! defined $_[0]) {
-        $self->{post} = undef;
-        return;
-    }
-
-    my @args = @_;
-    my ($cref, %p);
-
-    if (ref $args[0] eq 'CODE'){
-        $cref = shift;
-        %p = @_ if @_;
-    }
-    elsif ($args[0] eq 'return'){
-        $cref = pop @args;
-        %p = @args;
-    }
-    else {
-        croak "invalid parameters to post()";
-    }
-
-    $self->_check_wrap($cref, 'post');
-    $self->{post} = $cref;
-    $self->{wrap_post_return} = $p{return};
-}
 sub return_value {
     my $self = shift;
     @{ $self->{return} } = @_;
@@ -289,11 +173,6 @@ sub side_effect {
 sub _check_side_effect {
     if (defined $_[1] && ref $_[1] ne 'CODE') {
         croak "\n\nside_effect parameter must be a code reference. ";
-    }
-}
-sub _check_wrap {
-    if (defined $_[1] && ref $_[1] ne 'CODE') {
-        croak "\n\nwrap()'s '$_[2]' parameter must be code a reference.";
     }
 }
 sub mocked_state {
