@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Test::More tests => 8;
+use Test::More;
 
 use lib 't/data';
 
@@ -43,4 +43,4 @@ is (caller(), 7, "...and a side effect");
 
 is ($caller->called_count, 3, "call count is correct");
 
-
+done_testing();

@@ -3,7 +3,7 @@ use 5.006;
 use strict;
 use warnings;
 
-use Carp qw(croak);
+use Carp qw(confess);
 use Mock::Sub::Child;
 use Scalar::Util qw(weaken);
 
@@ -19,7 +19,7 @@ sub mock {
     my $sub = shift;
 
     if (ref($self) ne 'Mock::Sub'){
-        croak
+        confess
             "calling mock() on the Mock::Sub class is no longer permitted. " .
             "create a new mock object with Mock::Sub->new;, then call mock " .
             "with my \$sub_object = \$mock->mock('sub_name'); ";
@@ -30,7 +30,7 @@ sub mock {
     }
 
     if (! defined wantarray){
-        croak "\n\ncalling mock() in void context isn't allowed. ";
+        confess "\n\ncalling mock() in void context isn't allowed. ";
     }
 
     my $child = Mock::Sub::Child->new;
@@ -71,7 +71,7 @@ sub mocked_state {
     my ($self, $sub) = @_;
 
     if (! $sub){
-        croak "calling mocked_state() on a Mock::Sub object requires a sub " .
+        confess "calling mocked_state() on a Mock::Sub object requires a sub " .
               "name to be passed in as its only parameter. ";
     }
 
@@ -79,7 +79,7 @@ sub mocked_state {
         my $test = $self->{objects}{$sub}{obj}->mocked_state();
     };
     if ($@){
-        croak "can't call mocked_state() on the class if the sub hasn't yet " .
+        confess "can't call mocked_state() on the class if the sub hasn't yet " .
               "been mocked. ";
     }
     return $self->{objects}{$sub}{obj}->mocked_state;
@@ -234,7 +234,7 @@ MyModule::first).
 =head2 C<new(%opts)>
 
 Instantiates and returns a new C<Mock::Sub> object, ready to be used to start
-cteating mocked sub objects.
+creating mocked sub objects.
 
 Optional options:
 
@@ -314,7 +314,7 @@ Returns the number of times the mocked sub has been called.
 
 =head2 C<called_with>
 
-Returns an array of the parameters sent to the subroutine. C<croak()s> if
+Returns an array of the parameters sent to the subroutine. C<confess()s> if
 we're called before the mocked sub has been called.
 
 =head2 C<mocked_state>

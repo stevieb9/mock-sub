@@ -3,7 +3,7 @@ use 5.006;
 use strict;
 use warnings;
 
-use Carp qw(croak);
+use Carp qw(confess);
 use Scalar::Util qw(weaken);
 
 our $VERSION = '1.07';
@@ -29,17 +29,17 @@ sub _mock {
     }
 
     my $caller = (caller(1))[3] || '';
-
+    
     if ($caller ne 'Mock::Sub::mock' && $sub_passed_in){
         undef @_;
         if(ref($self) eq 'Mock::Sub::Child' && ! $self->{name}){
-            croak "can't call mock() on a child object before it is already " .
+            confess "can't call mock() on a child object before it is already " .
                   "initialized with the parent mock object. ";
         }
     }
 
     if ($caller ne 'Mock::Sub::mock' && $caller ne 'Mock::Sub::Child::remock'){
-        croak "the _mock() method is not a public API call. For re-mocking " .
+        confess "the _mock() method is not a public API call. For re-mocking " .
               "an existing sub in an existing sub object, use remock().\n";
     }
 
@@ -149,7 +149,7 @@ sub called_count {
 sub called_with {
     my $self = shift;
     if (! $self->called){
-        croak "\n\ncan't call called_with() before the mocked sub has " .
+        confess "\n\ncan't call called_with() before the mocked sub has " .
             "been called. ";
     }
     return @{ $self->{called_with} };
@@ -172,7 +172,7 @@ sub side_effect {
 }
 sub _check_side_effect {
     if (defined $_[1] && ref $_[1] ne 'CODE') {
-        croak "\n\nside_effect parameter must be a code reference. ";
+        confess "\n\nside_effect parameter must be a code reference. ";
     }
 }
 sub mocked_state {

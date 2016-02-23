@@ -142,7 +142,7 @@ MOCK OBJECT METHODS
  new(%opts)
 
     Instantiates and returns a new Mock::Sub object, ready to be used to
-    start cteating mocked sub objects.
+    start creating mocked sub objects.
 
     Optional options:
 
@@ -221,8 +221,8 @@ SUB OBJECT METHODS
 
  called_with
 
-    Returns an array of the parameters sent to the subroutine. croak()s if
-    we're called before the mocked sub has been called.
+    Returns an array of the parameters sent to the subroutine. confess()s
+    if we're called before the mocked sub has been called.
 
  mocked_state
 

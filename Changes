@@ -1,6 +1,10 @@
 Revision history for Mock-Sub
 
-1.06    xxx
+1.07    xxx
+        - POD fix (closes #20)
+        - changed croak() to confess()
+
+1.06    2016-01-23
         - new remock() method does what Child::mock() used to do.
         - Child::mock() renamed to Child::_mock(), and is now private
           (fixes #17)
