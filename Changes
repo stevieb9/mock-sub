@@ -1,6 +1,6 @@
 Revision history for Mock-Sub
 
-1.07    xxx
+1.07    xxxx
         - POD fix (closes #20)
         - changed croak() to confess()
 
