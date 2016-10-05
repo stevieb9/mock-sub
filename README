@@ -9,6 +9,10 @@ SYNOPSIS
     
         use Mock::Sub;
     
+        # disable warnings about mocking non-existent subs
+    
+        use Mock::Sub no_warnings => 1
+    
         # create the parent mock object
     
         my $mock = Mock::Sub->new;

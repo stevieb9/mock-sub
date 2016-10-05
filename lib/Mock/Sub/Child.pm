@@ -67,10 +67,12 @@ sub _mock {
 
     my $fake;
 
-    if (! exists &$sub && $sub !~ /CORE::GLOBAL/){
+    if (! exists &$sub && $sub !~ /CORE::GLOBAL/) {
         $fake = 1;
-        warn "\n\nWARNING!: we've mocked a non-existent subroutine. " .
-             "the specified sub does not exist.\n\n";
+        if (! $self->_no_warn) {
+            warn "\n\nWARNING!: we've mocked a non-existent subroutine. ".
+                    "the specified sub does not exist.\n\n";
+        }
     }
 
     $self->_check_side_effect($self->{side_effect});
@@ -177,6 +179,9 @@ sub _check_side_effect {
 }
 sub mocked_state {
     return shift->{state};
+}
+sub _no_warn {
+    return $_[0]->{no_warnings};
 }
 sub DESTROY {
     $_[0]->unmock;

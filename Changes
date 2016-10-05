@@ -1,8 +1,10 @@
 Revision history for Mock-Sub
 
-1.07    xxxx
+1.07    2016-10-05
         - POD fix (closes #20)
         - changed croak() to confess()
+        - you can now add "no_warnings => 1" to the 'use Mock::Sub' line to
+          disable warnings about mocking non-existent subs (closes #22)
 
 1.06    2016-01-23
         - new remock() method does what Child::mock() used to do.

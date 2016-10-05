@@ -9,9 +9,19 @@ use Scalar::Util qw(weaken);
 
 our $VERSION = '1.07';
 
+my %opts;
+
+sub import {
+    my ($class, %args) = @_;
+    %opts = %args;
+}
 sub new {
     my $self = bless {}, shift;
     %{ $self } = @_;
+
+    for (keys %opts){
+        $self->{$_} = $opts{$_};
+    }
     return $self;
 }
 sub mock {
@@ -33,7 +43,7 @@ sub mock {
         confess "\n\ncalling mock() in void context isn't allowed. ";
     }
 
-    my $child = Mock::Sub::Child->new;
+    my $child = Mock::Sub::Child->new(no_warnings => $self->{no_warnings});
 
     $child->side_effect($self->{side_effect});
     $child->return_value($self->{return_value});
@@ -102,6 +112,10 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
     # see EXAMPLES for a full use case and caveats
 
     use Mock::Sub;
+
+    # disable warnings about mocking non-existent subs
+
+    use Mock::Sub no_warnings => 1
 
     # create the parent mock object
 
