@@ -7,7 +7,7 @@ use Carp qw(confess);
 use Mock::Sub::Child;
 use Scalar::Util qw(weaken);
 
-our $VERSION = '1.09';
+our $VERSION = '1.10';
 
 my %opts;
 

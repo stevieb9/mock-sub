@@ -6,7 +6,7 @@ use warnings;
 use Carp qw(confess);
 use Scalar::Util qw(weaken);
 
-our $VERSION = '1.09';
+our $VERSION = '1.10';
 
 sub new {
     my $self = bless {}, shift;
