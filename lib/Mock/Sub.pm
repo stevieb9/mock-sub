@@ -118,7 +118,7 @@ Mock::Sub - Mock package, object and standard subroutines, with unit testing in 
 
     # disable warnings about mocking non-existent subs
 
-    use Mock::Sub no_warnings => 1
+    use Mock::Sub no_warnings => 1;
 
     # create the parent mock object
 

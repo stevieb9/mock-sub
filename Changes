@@ -1,7 +1,7 @@
 Revision history for Mock-Sub
 
 1.10 UNREL
-        -
+        - add semi-colon to example in SYNOPSIS (fixes #23)
 
 1.09    2017-12-28
         - setting a return_value or side_effect when mocking one sub doesn't
