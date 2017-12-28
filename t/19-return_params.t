@@ -13,7 +13,7 @@ BEGIN {
 {# return params
 
     my $mock = Mock::Sub->new;
-    my $foo = $mock->mock('One::foo');
+    my $foo = $mock->mock('One::foo', return_value => 'params');
 
     my $scalar = One::foo(10);
     is $scalar, 10, "param is returned in scalar context";
