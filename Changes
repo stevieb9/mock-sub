@@ -1,6 +1,8 @@
 Revision history for Mock-Sub
 
 1.09 UNREL
+        - setting a return_value or side_effect when mocking one sub doesn't
+          affect any other subs mocked (fixes #25)
 
 1.08    2017-12-21
         - the mocked subs now return the parameters that were sent in to it if
