@@ -107,8 +107,11 @@ sub __end {}; # vim fold placeholder
 Mock::Sub - Mock package, object and standard subroutines, with unit testing in mind.
 
 =for html
-<a href="http://travis-ci.org/stevieb9/mock-sub"><img src="https://secure.travis-ci.org/stevieb9/mock-sub.png"/>
-<a href='https://coveralls.io/github/stevieb9/mock-sub?branch=master'><img src='https://coveralls.io/repos/stevieb9/mock-sub/badge.svg?branch=master&service=github' alt='Coverage Status' /></a>
+<a href="https://github.com/stevieb9/mock-sub/actions"><img src="https://github.com/stevieb9/mock-sub/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/mock-sub?branch=main'><img src='https://coveralls.io/repos/stevieb9/mock-sub/badge.svg?branch=main&service=github' alt='Coverage Status' /></a>
+
+
+=for html
 
 =head1 SYNOPSIS
 

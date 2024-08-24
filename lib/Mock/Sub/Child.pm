@@ -173,6 +173,10 @@ sub return_value {
     my $self = shift;
     @{ $self->{return} } = @_;
 }
+sub return_values {
+    my $self = shift;
+    @{ $self->{list_return} } = @_;
+}
 sub side_effect {
     $_[0]->_check_side_effect($_[1]);
     $_[0]->{side_effect} = $_[1];
@@ -198,6 +202,11 @@ __END__
 =head1 NAME
 
 Mock::Sub::Child - Provides for Mock::Sub
+
+=for html
+<a href="https://github.com/stevieb9/mock-sub/actions"><img src="https://github.com/stevieb9/mock-sub/workflows/CI/badge.svg"/></a>
+<a href='https://coveralls.io/github/stevieb9/mock-sub?branch=main'><img src='https://coveralls.io/repos/stevieb9/mock-sub/badge.svg?branch=main&service=github' alt='Coverage Status' /></a>
+
 
 =head1 METHODS
 
